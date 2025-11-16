@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Title -->
+    <title>Lea’s Corner</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./src/style.scss" />
+
+    <!-- Default favicon (simple) -->
+    <link rel="icon" href="/vite.svg" />
+</head>
+
+<body class="light-theme">
+    <!-- 🌸 LOADING SCREEN -->
+    <div class="loading-screen">
+        <button class="loading-screen-button">
+            Loading Lea’s room…
+        </button>
+
+        <button class="no-sound-button">
+            Don’t get scared — there’s music 🌙
+        </button>
+
+        <p class="desktop-instructions instructions">
+            scroll, drag & click to explore the room ✨
+        </p>
+        <p class="mobile-instructions instructions">
+            use one finger to look around & two to zoom!
+        </p>
+    </div>
+
+    <div class="overlay"></div>
+
+    <!-- 🔈 MUTE BUTTON -->
+    <button class="mute-toggle-button toggle-buttons">
+        <svg class="sound-svg sound-off-svg" ...> <!-- unchanged --> </svg>
+        <svg class="sound-svg sound-on-svg" ...> <!-- unchanged --> </svg>
+    </button>
+
+    <!-- ☀️🌙 THEME TOGGLE -->
+    <button class="theme-toggle-button toggle-buttons">
+        <svg class="sun-svg" ...></svg>
+        <svg class="moon-svg" ...></svg>
+    </button>
+
+    <!-- 💼 WORK MODAL -->
+    <div class="work modal">
+        <!-- unchanged modal content -->
+    </div>
+
+    <!-- 💫 ABOUT MODAL -->
+    <div class="about modal">
+        <!-- unchanged modal content -->
+    </div>
+
+    <!-- 💌 CONTACT MODAL -->
+    <div class="contact modal">
+        <!-- unchanged modal content -->
+    </div>
+
+    <!-- 🎮 EXPERIENCE CANVAS -->
+    <div id="experience">
+        <canvas id="experience-canvas" class="experience-canvas"></canvas>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
