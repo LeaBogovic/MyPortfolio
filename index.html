@@ -12,6 +12,13 @@
 
     <!-- Default favicon (simple) -->
     <link rel="icon" href="/vite.svg" />
+
+    <!-- Favicons used by the theme toggle logic -->
+    <link sizes="96x96" href="/media/light-favicon/favicon-96x96.png" />
+    <link type="image/svg+xml" href="/media/light-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/media/light-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" href="/media/light-favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/media/light-favicon/site.webmanifest" />
 </head>
 
 <body class="light-theme">
@@ -60,6 +67,29 @@
     <!-- 💌 CONTACT MODAL -->
     <div class="contact modal">
         <!-- unchanged modal content -->
+    </div>
+
+    <!-- 🖥 SCREEN MODAL (new) -->
+    <div class="screen modal">
+        <div class="modal-wrapper modal-content-wrapper">
+            <div class="modal-title">Screen</div>
+
+            <div class="modal-content">
+                <p class="modal-paragraph-text">
+                    This is the PC screen. You can show a project preview, video, or any content here.
+                </p>
+
+                <!-- Example content: keep simple for now; replace with real content later -->
+                <div style="margin-top: 16px;">
+                    <p class="list-text">• Click external link to open project</p>
+                    <p class="list-text">• Or embed a video / iframe</p>
+                </div>
+            </div>
+
+            <button class="modal-exit-button" aria-label="Close screen modal">
+                <svg class="exit-button-svg" viewBox="0 0 24 24"><!-- simple X icon --><path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </button>
+        </div>
     </div>
 
     <!-- 🎮 EXPERIENCE CANVAS -->
