@@ -58,8 +58,15 @@ $themes: (
 }
 
 body {
-  overflow: hidden;
+    overflow: hidden;
+    font-family: "Shifty Notes", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+
+button {
+    font: inherit; // makes all buttons use the same font as body
+}
+
+
 
 :root {
   font-synthesis: none;
@@ -95,6 +102,11 @@ ul,
 li {
   font-family: "Shifty Notes";
 }
+
+.numeric {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 
 ul {
   list-style: none;
@@ -191,24 +203,97 @@ ul {
 
 //Modals
 .modal {
-  @include vars.centered;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  max-width: 1200px;
-  width: 90%;
-  transform: translate(-50%, -50%);
-  font-size: 2.2rem;
-  z-index: 9999;
-  padding: 30px;
-  border-radius: 25px;
-  display: none;
-  border: 8px solid vars.$base-purple;
+    @include vars.centered;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    max-width: 1200px;
+    width: 90%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
+    z-index: 9999;
+    padding: 30px;
+    border-radius: 25px;
+    display: none;
+    border: 8px solid vars.$base-purple;
 }
 
 .about {
-  max-width: 800px;
+    max-width: 800px;
 }
+
+/* ✅ All About-specific layout stuff in ONE place */
+.about.modal {
+    position: absolute;
+    top: 53%; /* <-- push this one slightly DOWN */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 0;
+    overflow: visible; /* so glow blobs can sit outside */
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+
+.about.modal::before,
+.about.modal::after {
+    content: "";
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, #ffd6ec, transparent 60%);
+    opacity: 0.5;
+    pointer-events: none;
+    filter: blur(4px);
+    z-index: -1;
+}
+
+.about.modal::before {
+    top: -40px;
+    left: -40px;
+    animation: float-glow-1 14s ease-in-out infinite alternate;
+}
+
+.about.modal::after {
+    bottom: -50px;
+    right: -30px;
+    background: radial-gradient(circle at 30% 30%, #e4d6ff, transparent 60%);
+    animation: float-glow-2 16s ease-in-out infinite alternate;
+}
+
+@keyframes float-glow-1 {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate3d(18px, 10px, 0) scale(1.08);
+    }
+}
+
+@keyframes float-glow-2 {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    
+    100% {
+        transform: translate3d(-15px, -12px, 0) scale(1.06);
+    }
+}
+
+.about.modal {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.about.modal:hover {
+    transform: translate(-50%, -50%) scale(1.01);
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.38);
+
+    @include themed() {
+        border-color: t("base-dark-purple");
+    }
+}
+
 
 .contact {
   max-width: 500px;
@@ -339,6 +424,112 @@ ul {
     border-radius: 4px;
   }
 }
+
+.about-tabs {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1.5rem 0 0.75rem;
+    flex-wrap: wrap;
+}
+
+.about-tab-button {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font: inherit; // uses the same font as the rest of the site
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.about-tab-button.is-active {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+.about-tab-content {
+    display: none;
+}
+
+.about-tab-content.is-active {
+    display: block;
+}
+
+.modal-divider {
+    height: 1px;
+    width: 100%;
+    margin: 1rem 0 1.25rem;
+    background: linear-gradient( to right, transparent, rgba(255, 255, 255, 0.35), transparent );
+}
+
+.modal-signature {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    text-align: right;
+}
+
+.pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.pill {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 1.2rem;
+    cursor: default;
+    transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+
+    @include media.media("<=tablet") {
+        font-size: 1rem;
+    }
+
+    &:hover {
+        transform: translateY(-1px) scale(1.02);
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+    }
+}
+
+.about-photo-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.about-photo {
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    text-align: center;
+    font-size: 1rem;
+}
+
+.about-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 110px;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+}
+
+.about-photo:hover img {
+    transform: scale(1.05);
+}
+
+.about-photo figcaption {
+    padding: 0.35rem 0.5rem 0.5rem;
+    opacity: 0.85;
+}
+
 
 .work .modal-content-wrapper {
   @include vars.centered;

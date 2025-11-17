@@ -251,39 +251,64 @@ document.querySelectorAll(".modal-exit-button").forEach((button) => {
 let isModalOpen = true;
 
 const showModal = (modal) => {
-  modal.style.display = "block";
-  overlay.style.display = "block";
+    modal.style.display = "block";
+    overlay.style.display = "block";
 
-  isModalOpen = true;
-  controls.enabled = false;
+    isModalOpen = true;
+    controls.enabled = false;
 
-  if (currentHoveredObject) {
-    playHoverAnimation(currentHoveredObject, false);
-    currentHoveredObject = null;
-  }
-  document.body.style.cursor = "default";
-  currentIntersects = [];
+    if (currentHoveredObject) {
+        playHoverAnimation(currentHoveredObject, false);
+        currentHoveredObject = null;
+    }
 
-  gsap.set(modal, {
-    opacity: 0,
-    scale: 0,
-  });
-  gsap.set(overlay, {
-    opacity: 0,
-  });
+    document.body.style.cursor = "default";
+    currentIntersects = [];
 
-  gsap.to(overlay, {
-    opacity: 1,
-    duration: 0.5,
-  });
+    gsap.set(modal, {
+        opacity: 0,
+        scale: 0,
+    });
 
-  gsap.to(modal, {
-    opacity: 1,
-    scale: 1,
-    duration: 0.5,
-    ease: "back.out(2)",
-  });
+    gsap.set(overlay, {
+        opacity: 0,
+    });
+
+    gsap.to(overlay, {
+        opacity: 1,
+        duration: 0.5,
+    });
+
+    gsap.to(modal, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "back.out(2)",
+    });
+
+    // ✅ Extra: if this is the About modal, do a small 3D focus effect
+    if (modal.classList.contains("about")) {
+        // Example: animate camera a little closer / shifted
+        gsap.to(camera.position, {
+            x: camera.position.x + 0.2,
+            y: camera.position.y + 0.1,
+            z: camera.position.z + 0.1,
+            duration: 0.8,
+            ease: "power2.out",
+        });
+
+        // Optional: if you have a deskLight, give it a soft pulse
+        if (window.deskLight) {
+            gsap.to(deskLight, {
+                intensity: 1.4,
+                duration: 0.5,
+                yoyo: true,
+                repeat: 1,
+            });
+        }
+    }
 };
+
 
 const hideModal = (modal) => {
   isModalOpen = false;
@@ -305,6 +330,74 @@ const hideModal = (modal) => {
     },
   });
 };
+
+// -------------------------- About modal tabs -------------------------- //
+const aboutTabButtons = document.querySelectorAll(".about-tab-button");
+const aboutTabContents = document.querySelectorAll(".about-tab-content");
+
+if (aboutTabButtons.length && aboutTabContents.length) {
+    aboutTabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const targetId = button.getAttribute("data-tab");
+
+            // little press animation
+            gsap.fromTo(
+                button,
+                { scale: 0.96 },
+                { scale: 1, duration: 0.15, ease: "power2.out" }
+            );
+
+            // update active button
+            aboutTabButtons.forEach((btn) => btn.classList.remove("is-active"));
+            button.classList.add("is-active");
+
+            // update visible content
+            aboutTabContents.forEach((section) => {
+                if (section.id === targetId) {
+                    section.classList.add("is-active");
+                } else {
+                    section.classList.remove("is-active");
+                }
+            });
+        });
+    });
+
+}
+
+// -------------------------- About image parallax -------------------------- //
+const aboutModal = document.querySelector(".about.modal");
+const aboutImage = aboutModal?.querySelector(".base-image");
+
+if (aboutModal && aboutImage) {
+    aboutModal.addEventListener("mousemove", (event) => {
+        const rect = aboutModal.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;   // -0.5 to 0.5
+        const y = (event.clientY - rect.top) / rect.height - 0.5;  // -0.5 to 0.5
+
+        gsap.to(aboutImage, {
+            rotationY: x * 6,      // left/right tilt
+            rotationX: -y * 6,     // up/down tilt
+            x: x * 10,             // small slide
+            y: y * 10,
+            transformPerspective: 600,
+            transformOrigin: "center center",
+            duration: 0.3,
+            ease: "power2.out",
+        });
+    });
+
+    aboutModal.addEventListener("mouseleave", () => {
+        gsap.to(aboutImage, {
+            rotationX: 0,
+            rotationY: 0,
+            x: 0,
+            y: 0,
+            duration: 0.4,
+            ease: "power2.out",
+        });
+    });
+}
+
 
 
 
@@ -347,7 +440,7 @@ manager.onLoad = function () {
         loadingScreenButton.style.boxShadow = "none";
 
         // 📝 Your new welcome text instead of the Korean line
-        loadingScreenButton.textContent = "Welcome to Lea’s room 🌙";
+        loadingScreenButton.textContent = "Welcome to Lea’s Portflio 🌙";
 
         // Change overall loading screen bg colour
         loadingScreen.style.background = "linear-gradient(135deg, #ffe3f4, #ffd6f2)";
