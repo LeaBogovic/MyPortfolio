@@ -908,6 +908,29 @@ body.about-open {
     opacity: 0.85;
 }
 
+.hobby-chip-row,
+.workmode-row {
+    margin-top: 0.85rem;
+    margin-bottom: 0.35rem;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.hobby-chip,
+.workmode-chip {
+    cursor: pointer;
+
+    &.is-active {
+        box-shadow: 0 0 0 2px rgba(255, 178, 216, 0.9);
+        transform: translateY(-1px);
+    }
+}
+
+.about-spark {
+    background: radial-gradient(circle at 30% 30%, #ffffff, #ffd6f2);
+    box-shadow: 0 0 8px rgba(255, 182, 222, 0.7);
+}
+
 
 .work .modal-content-wrapper {
   @include vars.centered;

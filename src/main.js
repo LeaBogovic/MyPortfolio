@@ -584,6 +584,165 @@ if (aboutModal && aboutPhotos.length) {
 }
 
 
+// -------------------------- SMALL SPARKS INSIDE ABOUT MODAL -------------------------- //
+function spawnAboutSparks(event, count = 6) {
+    if (!aboutModal) return;
+
+    const rect = aboutModal.getBoundingClientRect();
+    const layerSelector = ".about-fx-layer";
+
+    let layer = aboutModal.querySelector(layerSelector);
+    if (!layer) {
+        layer = document.createElement("div");
+        layer.className = "about-fx-layer";
+        aboutModal.appendChild(layer);
+    }
+
+    const baseX = event.clientX ? event.clientX - rect.left : rect.width / 2;
+    const baseY = event.clientY ? event.clientY - rect.top : rect.height / 2;
+
+    for (let i = 0; i < count; i++) {
+        const spark = document.createElement("div");
+        spark.className = "about-spark";
+        spark.style.position = "absolute";
+        spark.style.width = "8px";
+        spark.style.height = "8px";
+        spark.style.borderRadius = "999px";
+        spark.style.pointerEvents = "none";
+        spark.style.left = `${baseX}px`;
+        spark.style.top = `${baseY}px`;
+        layer.appendChild(spark);
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 20 + Math.random() * 30;
+
+        gsap.fromTo(
+            spark,
+            { opacity: 1, scale: 0.6 },
+            {
+                opacity: 0,
+                scale: 1.2,
+                x: Math.cos(angle) * distance,
+                y: Math.sin(angle) * distance,
+                duration: 0.5 + Math.random() * 0.2,
+                ease: "power2.out",
+                onComplete: () => spark.remove(),
+            }
+        );
+    }
+}
+
+// -------------------------- BEYOND WORK: MOOD CHIPS -------------------------- //
+const hobbyChips = document.querySelectorAll(".hobby-chip");
+const hobbyStoryEl = document.querySelector(".hobby-story");
+
+if (aboutModal && hobbyChips.length && hobbyStoryEl) {
+    hobbyChips.forEach((chip) => {
+        chip.addEventListener("click", (event) => {
+            const story = chip.getAttribute("data-story");
+            if (!story) return;
+
+            // active state
+            hobbyChips.forEach((c) => c.classList.remove("is-active"));
+            chip.classList.add("is-active");
+
+            // tiny press animation
+            gsap.fromTo(
+                chip,
+                { scale: 0.94 },
+                { scale: 1, duration: 0.15, ease: "back.out(2)" }
+            );
+
+            // fade + swap text
+            gsap.to(hobbyStoryEl, {
+                opacity: 0,
+                y: 4,
+                duration: 0.15,
+                ease: "power1.in",
+                onComplete: () => {
+                    hobbyStoryEl.textContent = story;
+                    gsap.to(hobbyStoryEl, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.2,
+                        ease: "power2.out",
+                    });
+                },
+            });
+
+            // little pastel sparks inside the window
+            spawnAboutSparks(event);
+        });
+    });
+}
+
+// -------------------------- HOW I WORK: WORK MODE CHIPS -------------------------- //
+const workmodeChips = document.querySelectorAll(".workmode-chip");
+const workmodeText = document.querySelector(".workmode-text");
+const processRow = document.querySelector(".process-row");
+
+if (aboutModal && workmodeChips.length && workmodeText && processRow) {
+    const modeCopy = {
+        focus:
+            "Deep focus mode: headphones on, clear goals, lots of tiny commits and quiet progress.",
+        hackathon:
+            "Hackathon mode: fast prototypes, sticky notes everywhere, constant playtesting and adjusting as I go.",
+        mentor:
+            "Gentle mentor mode: documenting clearly, leaving helpful comments, and making sure future-me (or teammates) can pick things up easily.",
+    };
+
+    workmodeChips.forEach((chip) => {
+        chip.addEventListener("click", (event) => {
+            const mode = chip.getAttribute("data-mode");
+            if (!mode || !modeCopy[mode]) return;
+
+            // chip active state
+            workmodeChips.forEach((c) => c.classList.remove("is-active"));
+            chip.classList.add("is-active");
+
+            // tiny squash
+            gsap.fromTo(
+                chip,
+                { scale: 0.95 },
+                { scale: 1, duration: 0.16, ease: "back.out(2)" }
+            );
+
+            // animate the text
+            gsap.to(workmodeText, {
+                opacity: 0,
+                y: 3,
+                duration: 0.15,
+                ease: "power1.in",
+                onComplete: () => {
+                    workmodeText.textContent = modeCopy[mode];
+                    gsap.to(workmodeText, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.2,
+                        ease: "power2.out",
+                    });
+                },
+            });
+
+            // subtle pulse on the pipeline row
+            gsap.fromTo(
+                processRow,
+                { scale: 0.98 },
+                {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "back.out(2)",
+                }
+            );
+
+            // a couple of sparks to keep it fun
+            spawnAboutSparks(event, 4);
+        });
+    });
+}
+
+
+
 // -------------------------- ABOUT VIBE DICE (single dice) -------------------------- //
 
 const aboutVibeModal = document.querySelector(".about.modal");
@@ -1131,14 +1290,22 @@ if (aboutScrollWrapper && aboutScrollBar) {
 
 
 
+
 /**  -------------------------- Loading Screen & Intro Animation -------------------------- */
 
 const loadingScreen = document.querySelector(".loading-screen");
 const loadingScreenButton = document.querySelector(".loading-screen-button");
 const noSoundButton = document.querySelector(".no-sound-button");
 
-manager.onLoad = function () {
-    // 🌸 Initial button style when everything has finished loading
+const setupLoadingScreen = () => {
+    // safety checks so it doesn't explode if markup changes
+    if (!loadingScreen || !loadingScreenButton || !noSoundButton) return;
+
+    // avoid double-init if this somehow gets called twice
+    if (loadingScreenButton.dataset.initialised === "true") return;
+    loadingScreenButton.dataset.initialised = "true";
+
+    // 🌸 Initial button style
     loadingScreenButton.style.border = "4px solid #ff9ac8";
     loadingScreenButton.style.background = "#ffe3f4";
     loadingScreenButton.style.color = "#4a1f3d";
@@ -1167,39 +1334,46 @@ manager.onLoad = function () {
         loadingScreenButton.style.color = "#7a4bb8";
         loadingScreenButton.style.boxShadow = "none";
 
-        // 📝 Your new welcome text instead of the Korean line
+        // 📝 New welcome text
         loadingScreenButton.textContent = "Welcome to Lea’s Portflio 🌙";
 
         // Change overall loading screen bg colour
-        loadingScreen.style.background = "linear-gradient(135deg, #ffe3f4, #ffd6f2)";
+        loadingScreen.style.background =
+            "linear-gradient(135deg, #ffe3f4, #ffd6f2)";
 
         isDisabled = true;
 
         toggleFavicons();
 
         if (!withSound) {
+            // no-sound path
             isMuted = true;
             updateMuteState(true);
-
             soundOnSvg.style.display = "none";
             soundOffSvg.style.display = "block";
         } else {
-            backgroundMusic.play();
+            // play bg music if allowed
+            if (!isMuted) {
+                backgroundMusic.play();
+            }
         }
 
+        // let GSAP yeet the loading screen + start room intro
         playReveal();
     }
 
     // ✨ Hover animation
     loadingScreenButton.addEventListener("mouseenter", () => {
         loadingScreenButton.style.transform = "scale(1.06)";
-        loadingScreenButton.style.boxShadow = "0 10px 25px rgba(176, 132, 255, 0.45)";
+        loadingScreenButton.style.boxShadow =
+            "0 10px 25px rgba(176, 132, 255, 0.45)";
         loadingScreenButton.style.background = "#f2ddff";
     });
 
     loadingScreenButton.addEventListener("mouseleave", () => {
         loadingScreenButton.style.transform = "none";
-        loadingScreenButton.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.18)";
+        loadingScreenButton.style.boxShadow =
+            "0 8px 20px rgba(0, 0, 0, 0.18)";
         loadingScreenButton.style.background = "#f7e9ff";
     });
 
@@ -1207,7 +1381,7 @@ manager.onLoad = function () {
     loadingScreenButton.addEventListener("touchend", (e) => {
         touchHappened = true;
         e.preventDefault();
-        handleEnter();
+        handleEnter(true);
     });
 
     loadingScreenButton.addEventListener("click", (e) => {
@@ -1221,31 +1395,46 @@ manager.onLoad = function () {
     });
 };
 
+// ✅ Make the button usable as soon as scripts are ready
+setupLoadingScreen();
 
-function playReveal() {
-  const tl = gsap.timeline();
-
-  tl.to(loadingScreen, {
-    scale: 0.5,
-    duration: 1.2,
-    delay: 0.25,
-    ease: "back.in(1.8)",
-  }).to(
-    loadingScreen,
-    {
-      y: "200vh",
-      transform: "perspective(1000px) rotateX(45deg) rotateY(-35deg)",
-      duration: 1.2,
-      ease: "back.in(1.8)",
-      onComplete: () => {
-        isModalOpen = false;
-        playIntroAnimation();
-        loadingScreen.remove();
-      },
-    },
-    "-=0.1"
-  );
+// ✅ Also hook it to the loading manager (so if everything loads nicely, we can re-style if we want)
+if (manager) {
+    manager.onLoad = setupLoadingScreen;
 }
+
+
+       
+
+// ⬇️ next line in the file
+function playReveal() {
+    const tl = gsap.timeline();
+
+    tl.to(loadingScreen, {
+        scale: 0.9,
+        duration: 0.9,
+        delay: 0.15,
+        ease: "power2.inOut",
+    }).to(
+        loadingScreen,
+        {
+            y: "180vh",
+            transform: "perspective(1000px) rotateX(35deg) rotateY(-25deg)",
+            duration: 0.9,
+            ease: "power2.inOut",
+            onComplete: () => {
+                isModalOpen = false;
+                playIntroAnimation();
+                loadingScreen.remove();
+            },
+        },
+        "-=0.25"
+    );
+}
+
+
+
+
 
 function playIntroAnimation() {
   const t1 = gsap.timeline({
@@ -2083,6 +2272,7 @@ let slippers1, slippers2;
 let egg1, egg2, egg3;
 
 let frame1, frame2, frame3;
+
 
 const useOriginalMeshObjects = ["Bulb", "Cactus", "Kirby"];
 
