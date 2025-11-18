@@ -217,8 +217,10 @@
             <div class="about-scroll-track">
                 <div class="about-scroll-bar"></div>
             </div>
+            <div class="about-scroll-hint">» Intro</div>
 
             <div class="modal-content">
+
                 <div class="modal-content-wrapper">
                     <div class="paragraph-section">
 
@@ -285,9 +287,7 @@
                                 <button class="vibe-button" type="button">
                                     Roll a vibe 🎲
                                 </button>
-                                <button class="vibe-theme-button" type="button">
-                                    Theme roll ✨
-                                </button>
+
                             </div>
 
                             <p class="modal-paragraph-text vibe-line">
@@ -437,47 +437,64 @@
                             <h2 class="modal-paragraph-header">🌸 Beyond the screen</h2>
 
                             <p class="modal-paragraph-text">
-                                When I’m not in Unity or VS Code, I’m usually still creating or collecting moments for
-                                later projects.
+                                When I’m not in Unity or VS Code, I’m usually still collecting moments, moods,
+                                and tiny details I can smuggle back into my projects later.
                             </p>
 
                             <ul>
                                 <li class="list-text">
-                                    <strong>Hiking & long walks</strong> – I love big goals and slow, steady progress.
-                                    That same mindset shows up in how I approach long-term projects and polishing details.
+                                    <strong>Hiking & long walks</strong> – I love big goals and slow, steady
+                                    progress. That same mindset shows up in how I approach long-term projects,
+                                    refactors, and polish passes.
                                 </li>
                                 <li class="list-text">
-                                    <strong>Photography & videography</strong> – I enjoy capturing little details,
-                                    behind-the-scenes moments, and reference material for future worlds.
+                                    <strong>Photography & videography</strong> – I’m obsessed with framing,
+                                    light, and small background details. A lot of level ideas start as a photo
+                                    or a short clip I took “just in case I need this vibe later”.
                                 </li>
                                 <li class="list-text">
-                                    <strong>Journaling & dev logs</strong> – I document ideas, feelings, bugs, story threads,
-                                    and tiny “what if” ideas that often turn into features.
+                                    <strong>Journaling & dev logs</strong> – I write down story beats, bugs,
+                                    emotions, and “what if…” ideas. It helps me track how a project feels over
+                                    time, not just how it looks.
                                 </li>
                                 <li class="list-text">
-                                    <strong>Animation & 3D</strong> – I love bringing props and environments to life in Blender
-                                    and translating that feeling into VR.
+                                    <strong>Animation & 3D tinkering</strong> – I love bringing props and
+                                    environments to life in Blender and then seeing how they feel inside VR or a
+                                    game scene.
                                 </li>
                             </ul>
 
-                            <!-- Small photo strip -->
+                            <p class="modal-paragraph-text sm-margin-top">
+                                A lot of my favourite ideas start as tiny real-life moments – a quiet train
+                                ride, late-night shop lights, or how people move when they’re tired. Those
+                                details quietly sneak into my worlds.
+                            </p>
+
+                            <!-- Small photo strip with click-to-reveal stories -->
                             <div class="about-photo-strip">
-                                <figure class="about-photo">
+                                <figure class="about-photo"
+                                        data-detail="48 hours, very little sleep, and building educational projects with teammates while constantly tweaking scope. It taught me how much I love mixing science, art, and play.">
                                     <img src="/images/nasa_hackathon.webp"
                                          alt="NASA Space Apps hackathon photo" />
                                     <figcaption>NASA Space Apps</figcaption>
                                 </figure>
-                                <figure class="about-photo">
+                                <figure class="about-photo"
+                                        data-detail="A full day of prototypes, last-minute fixes, and cheering on other teams. It made me realise how much I enjoy game jams, feedback, and seeing people actually play what we make.">
                                     <img src="/images/games_fleadh.webp"
                                          alt="Games Fleadh event photo" />
                                     <figcaption>Games Fleadh</figcaption>
                                 </figure>
-                                <figure class="about-photo">
+                                <figure class="about-photo"
+                                        data-detail="Little snapshots from working on VR training and personal projects – trying new interaction systems, breaking things on purpose, and chasing that ‘this feels right now’ moment.">
                                     <img src="/images/vr_dev.webp"
                                          alt="Working on a VR project" />
                                     <figcaption>VR dev moments</figcaption>
                                 </figure>
                             </div>
+
+                            <p class="modal-paragraph-text sm-font xsm-margin-top about-photo-hint">
+                                Tip: click a photo for a tiny story ✨
+                            </p>
                         </div>
 
                         <!-- TAB 3: HOW I WORK (PROCESS / VIBE) -->
@@ -485,28 +502,43 @@
                             <h2 class="modal-paragraph-header">🛠️ How I work</h2>
 
                             <p class="modal-paragraph-text">
-                                I like mixing structure with curiosity. I treat projects like journeys — with space to
-                                explore, but also clear milestones.
+                                I like mixing structure with curiosity. I treat projects like journeys — with
+                                space to explore, but also clear checkpoints so things actually ship.
                             </p>
 
                             <ul>
                                 <li class="list-text">
-                                    I build a lot of <strong>small prototypes</strong> to test ideas — interactions, physics,
-                                    timing, sound, and feel.
+                                    I build <strong>small prototypes</strong> to test ideas — interactions,
+                                    physics, timing, sound, and feel. I’d rather try things quickly than guess
+                                    how they’ll feel.
                                 </li>
                                 <li class="list-text">
-                                    I use <strong>notes, screenshots, and short clips</strong> to track progress and decisions,
-                                    which makes it easier to iterate and share with others.
+                                    I use <strong>notes, screenshots, and short clips</strong> to track progress
+                                    and decisions. It makes it easier to explain choices to others and to see
+                                    how an idea evolved.
                                 </li>
                                 <li class="list-text">
-                                    I enjoy <strong>collaborating in Agile teams</strong>, but I’m also comfortable owning
-                                    features or a full experience on my own.
+                                    I like breaking work into <strong>tiny, finishable tasks</strong> so that
+                                    big features feel less scary. Little wins keep the momentum going.
                                 </li>
                                 <li class="list-text">
-                                    I focus heavily on <strong>feedback & polish</strong> — animations, particles, tiny sound
-                                    cues — all the little things that make a space feel real.
+                                    I enjoy <strong>collaborating in Agile teams</strong> — planning sprints,
+                                    sharing progress, and adjusting when things change — but I’m also happy
+                                    owning a whole feature or experience when needed.
+                                </li>
+                                <li class="list-text">
+                                    I care a lot about <strong>feedback & polish</strong> — animation curves,
+                                    particles, sound cues, and tiny timing tweaks that make an experience feel
+                                    intentional and alive.
                                 </li>
                             </ul>
+
+                            <!-- Tiny “pipeline” row using existing pill styles -->
+                            <div class="pill-row process-row">
+                                <span class="pill">📌 Explore & research</span>
+                                <span class="pill">🧪 Prototype & playtest</span>
+                                <span class="pill">✨ Polish & storytelling</span>
+                            </div>
 
                             <div class="modal-divider"></div>
 
@@ -516,7 +548,7 @@
                                     Background music: Cosmic Star Candy by Daystar Project.
                                 </li>
                                 <li class="list-text-2">
-                                    Inspired by Bruno Simon’s Room Portfolio, Rachel Wei’s 3D portfolio,
+                                    Inspired by Bruno Simon’s room portfolio, Rachel Wei’s 3D portfolio,
                                     and work by Denis Wipart & Nicky Blender.
                                 </li>
                                 <li class="list-text-2">
@@ -528,6 +560,7 @@
                                 — Lea 🪷
                             </p>
                         </div>
+
 
                     </div>
 

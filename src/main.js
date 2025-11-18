@@ -339,24 +339,7 @@ const hideModal = (modal) => {
 
 
 
-// -------------------------- ABOUT INTRO TYPEWRITER -------------------------- //
-function typeAboutIntro(targetEl) {
-    targetEl.textContent = "";
-    const chars = ABOUT_INTRO_TEXT.split("");
-    let index = 0;
 
-    const step = () => {
-        if (index > chars.length) return;
-        targetEl.textContent = chars.slice(0, index).join("");
-        index++;
-
-        // cute variable speed
-        const delay = gsap.utils.random(25, 55);
-        setTimeout(step, delay);
-    };
-
-    step();
-}
 
 
 // -------------------------- About modal tabs -------------------------- //
@@ -553,6 +536,514 @@ if (aboutModal && aboutImage) {
     });
 }
 
+// -------------------------- ABOUT PHOTO STORIES -------------------------- //
+const aboutPhotos = document.querySelectorAll(".about-photo");
+
+if (aboutModal && aboutPhotos.length) {
+    aboutPhotos.forEach((photo) => {
+        photo.addEventListener("click", () => {
+            const detail = photo.getAttribute("data-detail");
+            if (!detail) return;
+
+            const titleEl = photo.querySelector("figcaption");
+            const title = titleEl ? titleEl.textContent.trim() : "Story";
+
+            // remove existing popup if any
+            const existing = aboutModal.querySelector(".about-photo-popup");
+            if (existing && existing.dataset.source === title) {
+                // clicking the same photo toggles it off
+                gsap.to(existing, {
+                    opacity: 0,
+                    y: 6,
+                    duration: 0.2,
+                    ease: "power2.in",
+                    onComplete: () => existing.remove(),
+                });
+                return;
+            } else if (existing) {
+                existing.remove();
+            }
+
+            const popup = document.createElement("div");
+            popup.className = "about-photo-popup";
+            popup.dataset.source = title;
+            popup.innerHTML = `
+                <div class="about-photo-popup-title">${title}</div>
+                <div class="about-photo-popup-body">${detail}</div>
+            `;
+
+            aboutModal.appendChild(popup);
+
+            gsap.fromTo(
+                popup,
+                { opacity: 0, y: 8 },
+                { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }
+            );
+        });
+    });
+}
+
+
+// -------------------------- ABOUT VIBE DICE (single dice) -------------------------- //
+
+const aboutVibeModal = document.querySelector(".about.modal");
+const vibeButton = document.querySelector(".vibe-button");
+const vibeLine = document.querySelector(".vibe-line");
+
+if (aboutVibeModal && vibeButton && vibeLine) {
+    // helper: internal FX layer so everything stays inside the window
+    function getVibeFxLayer() {
+        let layer = aboutVibeModal.querySelector(".about-fx-layer");
+        if (!layer) {
+            layer = document.createElement("div");
+            layer.className = "about-fx-layer";
+            aboutVibeModal.appendChild(layer);
+        }
+        return layer;
+    }
+
+    // ✨ lots of Lea-coded vibes
+    const vibeSentences = [
+        "polishing tiny interactions and overthinking particles.",
+        "tweaking VR hand tracking until the grab finally feels ‘right’.",
+        "daydreaming about cozy balcony plants and liminal rooms.",
+        "mentally turning every real-life space into a level layout.",
+        "saving way too many screenshots ‘for reference later’.",
+        "balancing C# scripts, dev logs, and way too many sticky notes.",
+        "rewatching favourite scenes just to study lighting and pacing.",
+        "imagining how a stranger will feel when they load this scene.",
+        "turning bug-hunting into a mini-game with tiny victories.",
+        "thinking about how to hide story clues in props and details.",
+        "connecting sound cues to emotions, not just actions.",
+        "turning NASA Hackathon chaos into polished, explorable ideas.",
+        "remembering Games Fleadh energy and wanting that in every project.",
+        "mentally colour-grading moments like they’re shots from a film.",
+        "treating every prototype like a tiny playground for interactions.",
+        "thinking ‘what if this mechanic told a story by itself?’",
+        "planning hikes like boss fights: long, tough, but so satisfying.",
+        "collecting textures, sounds and photos as future world-building loot.",
+    ];
+
+    const vibeEffects = ["stars", "xp", "petals", "glow", "trail"];
+
+    function playVibeEffect() {
+        const layer = getVibeFxLayer();
+        if (!layer) return;
+
+        layer.innerHTML = ""; // clear any previous FX
+        const effectId = vibeEffects[Math.floor(Math.random() * vibeEffects.length)];
+
+        // pastel star burst rising from the middle
+        if (effectId === "stars") {
+            const colors = ["#ffe6f4", "#f9d9ff", "#d8e4ff", "#fff7da"];
+            for (let i = 0; i < 14; i++) {
+                const star = document.createElement("div");
+                star.style.position = "absolute";
+                star.style.width = "10px";
+                star.style.height = "10px";
+                star.style.borderRadius = "999px";
+                star.style.background = colors[i % colors.length];
+                star.style.left = `${20 + Math.random() * 60}%`;
+                star.style.top = `${50 + Math.random() * 10}%`;
+                star.style.opacity = "0";
+                layer.appendChild(star);
+
+                gsap.to(star, {
+                    y: -40 - Math.random() * 30,
+                    opacity: 1,
+                    scale: 0.8 + Math.random() * 0.5,
+                    duration: 0.5 + Math.random() * 0.3,
+                    ease: "power1.out",
+                    onComplete: () => {
+                        gsap.to(star, {
+                            opacity: 0,
+                            duration: 0.2,
+                            onComplete: () => star.remove(),
+                        });
+                    },
+                });
+            }
+        }
+
+        // gamer-y XP popup
+        else if (effectId === "xp") {
+            const badge = document.createElement("div");
+            badge.textContent = "XP +5 • Immersion";
+            badge.style.position = "absolute";
+            badge.style.top = "14px";
+            badge.style.right = "18px";
+            badge.style.padding = "4px 12px";
+            badge.style.borderRadius = "999px";
+            badge.style.background =
+                "linear-gradient(135deg, #bbf7d0, #a5f3fc)";
+            badge.style.color = "#052e16";
+            badge.style.fontFamily =
+                "Motley Forces, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+            badge.style.fontSize = "11px";
+            badge.style.boxShadow = "0 4px 14px rgba(0,0,0,0.25)";
+            badge.style.opacity = "0";
+            layer.appendChild(badge);
+
+            gsap.to(badge, {
+                opacity: 1,
+                y: -4,
+                duration: 0.2,
+                ease: "power2.out",
+            });
+            gsap.to(badge, {
+                opacity: 0,
+                y: -18,
+                duration: 0.35,
+                delay: 0.9,
+                ease: "power2.in",
+                onComplete: () => badge.remove(),
+            });
+        }
+
+        // little “petal / leaf” fall inside the window
+        else if (effectId === "petals") {
+            const colors = ["#fecaca", "#fed7aa", "#fef3c7"];
+            for (let i = 0; i < 10; i++) {
+                const petal = document.createElement("div");
+                petal.style.position = "absolute";
+                petal.style.width = "14px";
+                petal.style.height = "8px";
+                petal.style.borderRadius = "999px";
+                petal.style.background = colors[i % colors.length];
+                petal.style.left = `${10 + Math.random() * 80}%`;
+                petal.style.top = "-10px";
+                petal.style.opacity = "0";
+                layer.appendChild(petal);
+
+                gsap.to(petal, {
+                    opacity: 1,
+                    y: 90 + Math.random() * 40,
+                    x: -20 + Math.random() * 40,
+                    rotation: -40 + Math.random() * 80,
+                    duration: 1.1 + Math.random() * 0.4,
+                    ease: "sine.inOut",
+                    onComplete: () => {
+                        gsap.to(petal, {
+                            opacity: 0,
+                            duration: 0.2,
+                            onComplete: () => petal.remove(),
+                        });
+                    },
+                });
+            }
+        }
+
+        // soft glow pulse on the whole window
+        else if (effectId === "glow") {
+            const originalShadow = aboutVibeModal.style.boxShadow || "";
+            gsap.to(aboutVibeModal, {
+                boxShadow: "0 0 40px rgba(255,214,236,0.95)",
+                duration: 0.25,
+                yoyo: true,
+                repeat: 1,
+                ease: "power2.out",
+                onComplete: () => {
+                    aboutVibeModal.style.boxShadow = originalShadow;
+                },
+            });
+        }
+
+        // tiny trail under the dice button, like a spark streak
+        else if (effectId === "trail") {
+            const rect = vibeButton.getBoundingClientRect();
+            const modalRect = aboutVibeModal.getBoundingClientRect();
+            const trail = document.createElement("div");
+            trail.style.position = "absolute";
+            trail.style.height = "5px";
+            trail.style.borderRadius = "999px";
+            trail.style.background =
+                "linear-gradient(90deg, rgba(244,114,182,1), rgba(129,140,248,1))";
+            trail.style.top = `${rect.bottom - modalRect.top - 6}px`;
+            trail.style.left = `${rect.left - modalRect.left + 8}px`;
+            trail.style.width = "0px";
+            layer.appendChild(trail);
+
+            gsap.to(trail, {
+                width: rect.width - 16,
+                duration: 0.25,
+                ease: "power2.out",
+            });
+            gsap.to(trail, {
+                opacity: 0,
+                duration: 0.3,
+                delay: 0.4,
+                ease: "power2.in",
+                onComplete: () => trail.remove(),
+            });
+        }
+    }
+
+    function rollVibe() {
+        const current = vibeLine.textContent || "";
+        let next = current;
+        let safety = 0;
+
+        while (next === current && safety < 30) {
+            const fragment =
+                vibeSentences[Math.floor(Math.random() * vibeSentences.length)];
+            next = "Currently: " + fragment;
+            safety++;
+        }
+
+        // fun dice squash
+        gsap.fromTo(
+            vibeButton,
+            { scale: 0.94, rotation: -2 },
+            { scale: 1, rotation: 0, duration: 0.18, ease: "back.out(2)" }
+        );
+
+        gsap.to(vibeLine, {
+            opacity: 0,
+            y: 4,
+            duration: 0.14,
+            onComplete: () => {
+                vibeLine.textContent = next;
+                gsap.to(vibeLine, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.22,
+                    ease: "power2.out",
+                });
+            },
+        });
+
+        playVibeEffect();
+    }
+
+    vibeButton.addEventListener("click", rollVibe);
+}
+
+
+/* ---------------- THEME DICE (only changes theme-line + themed FX) ---------------- */
+
+const themeButton = document.querySelector(".about-theme-dice");
+const themeLine = document.querySelector(".about-theme-line");
+
+
+if (themeButton && themeLine && aboutModal) {
+    const themeRolls = [
+        {
+            id: "fantasy",
+            text: "Fantasy: violet fire vibes, quiet magic, and little runes hidden in the details.",
+        },
+        {
+            id: "aesthetic",
+            text: "Aesthetic: soft gradients, cozy light, clean UI and tiny sparkles of chaos.",
+        },
+        {
+            id: "developer",
+            text: "Developer: build logs, debug cubes, refactors, and ‘what if we tried this?’ energy.",
+        },
+        {
+            id: "story",
+            text: "Story / Immersion: pacing, atmosphere, subtle sound cues and feelings-first design.",
+        },
+        {
+            id: "gamer",
+            text: "Gamer: XP popups, loot energy, secrets and ‘one more run’ vibes.",
+        },
+    ];
+
+    function runThemeEffect(themeId) {
+        const layer = getAboutFxLayer();
+        if (!layer) return;
+        layer.innerHTML = "";
+
+        if (themeId === "fantasy") {
+            // glowing magic ring in the center of the window
+            const ring = document.createElement("div");
+            ring.style.position = "absolute";
+            ring.style.left = "50%";
+            ring.style.top = "50%";
+            ring.style.transform = "translate(-50%, -50%)";
+            ring.style.width = "230px";
+            ring.style.height = "230px";
+            ring.style.borderRadius = "999px";
+            ring.style.border = "2px solid rgba(186, 140, 255, 0.9)";
+            ring.style.boxShadow =
+                "0 0 30px rgba(173, 127, 255, 0.9), 0 0 60px rgba(120, 88, 200, 0.8)";
+            ring.style.opacity = "0";
+            layer.appendChild(ring);
+
+            gsap.to(ring, {
+                opacity: 1,
+                duration: 0.25,
+                ease: "power2.out",
+            });
+            gsap.to(ring, {
+                opacity: 0,
+                scale: 1.06,
+                duration: 0.7,
+                delay: 0.6,
+                ease: "power2.inOut",
+                onComplete: () => ring.remove(),
+            });
+        } else if (themeId === "aesthetic") {
+            // pastel gradient wash only inside the window
+            const wash = document.createElement("div");
+            wash.style.position = "absolute";
+            wash.style.inset = "0";
+            wash.style.borderRadius = "inherit";
+            wash.style.background =
+                "linear-gradient(135deg, rgba(255,214,236,0.9), rgba(228,214,255,0.92))";
+            wash.style.opacity = "0";
+            layer.appendChild(wash);
+
+            gsap.to(wash, {
+                opacity: 1,
+                duration: 0.25,
+                ease: "power2.out",
+            });
+            gsap.to(wash, {
+                opacity: 0,
+                duration: 0.5,
+                delay: 0.7,
+                ease: "power2.in",
+                onComplete: () => wash.remove(),
+            });
+        } else if (themeId === "developer") {
+            // mini console log panel inside bottom-left
+            const panel = document.createElement("div");
+            panel.textContent =
+                "> build succeeded(): 0 errors, 3 warnings (all vibes)";
+            panel.style.position = "absolute";
+            panel.style.left = "14px";
+            panel.style.bottom = "14px";
+            panel.style.padding = "6px 10px";
+            panel.style.borderRadius = "6px";
+            panel.style.background = "#020617ee";
+            panel.style.color = "#e5e7eb";
+            panel.style.fontFamily =
+                "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace";
+            panel.style.fontSize = "11px";
+            panel.style.opacity = "0";
+            layer.appendChild(panel);
+
+            gsap.to(panel, {
+                opacity: 1,
+                y: -4,
+                duration: 0.2,
+                ease: "power2.out",
+            });
+            gsap.to(panel, {
+                opacity: 0,
+                y: 2,
+                duration: 0.4,
+                delay: 1.1,
+                ease: "power2.in",
+                onComplete: () => panel.remove(),
+            });
+        } else if (themeId === "story") {
+            // cinematic bars INSIDE the window
+            const topBar = document.createElement("div");
+            const bottomBar = document.createElement("div");
+            [topBar, bottomBar].forEach((bar) => {
+                bar.style.position = "absolute";
+                bar.style.left = "6px";
+                bar.style.right = "6px";
+                bar.style.height = "14%";
+                bar.style.background = "rgba(0,0,0,0.9)";
+                bar.style.borderRadius = "12px";
+                bar.style.opacity = "0";
+                layer.appendChild(bar);
+            });
+            topBar.style.top = "6px";
+            bottomBar.style.bottom = "6px";
+
+            gsap.to([topBar, bottomBar], {
+                opacity: 1,
+                duration: 0.2,
+                ease: "power2.out",
+            });
+            gsap.to([topBar, bottomBar], {
+                opacity: 0,
+                duration: 0.45,
+                delay: 1.0,
+                ease: "power2.in",
+                onComplete: () => {
+                    topBar.remove();
+                    bottomBar.remove();
+                },
+            });
+        } else if (themeId === "gamer") {
+            // level-up popup near bottom center INSIDE the window
+            const popup = document.createElement("div");
+            popup.textContent = "LEVEL UP: Immersive Dev +1";
+            popup.style.position = "absolute";
+            popup.style.left = "50%";
+            popup.style.bottom = "16%";
+            popup.style.transform = "translateX(-50%)";
+            popup.style.padding = "7px 14px";
+            popup.style.borderRadius = "999px";
+            popup.style.background =
+                "linear-gradient(135deg, #22c55e, #4ade80)";
+            popup.style.color = "#022c22";
+            popup.style.fontFamily =
+                "Motley Forces, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+            popup.style.fontSize = "13px";
+            popup.style.boxShadow = "0 8px 20px rgba(0,0,0,0.35)";
+            popup.style.opacity = "0";
+            layer.appendChild(popup);
+
+            gsap.to(popup, {
+                opacity: 1,
+                y: -4,
+                duration: 0.2,
+                ease: "power2.out",
+            });
+            gsap.to(popup, {
+                opacity: 0,
+                y: -20,
+                duration: 0.4,
+                delay: 1.1,
+                ease: "power2.in",
+                onComplete: () => popup.remove(),
+            });
+        }
+    }
+
+    themeButton.addEventListener("click", () => {
+        const current = themeLine.textContent || "";
+
+        // pick a new theme different from current line if possible
+        let choice = themeRolls[Math.floor(Math.random() * themeRolls.length)];
+        let safety = 0;
+        while (current.includes(choice.text) && safety < 15) {
+            choice = themeRolls[Math.floor(Math.random() * themeRolls.length)];
+            safety++;
+        }
+
+        gsap.fromTo(
+            themeButton,
+            { scale: 0.95 },
+            { scale: 1, duration: 0.16, ease: "power2.out" }
+        );
+
+        gsap.to(themeLine, {
+            opacity: 0,
+            y: 3,
+            duration: 0.14,
+            onComplete: () => {
+                themeLine.textContent = `Theme: ${choice.text}`;
+                gsap.to(themeLine, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.2,
+                    ease: "power2.out",
+                });
+            },
+        });
+
+        runThemeEffect(choice.id);
+    });
+}
+
+
 // -------------------------- ABOUT CUSTOM CURSOR -------------------------- //
 const aboutModalForCursor = document.querySelector(".about.modal");
 const aboutCursor = document.querySelector(".about-cursor");
@@ -583,6 +1074,7 @@ const aboutScrollWrapper = document.querySelector(
     ".about.modal .modal-content-wrapper"
 );
 const aboutScrollBar = document.querySelector(".about-scroll-bar");
+const aboutScrollHint = document.querySelector(".about-scroll-hint");
 
 if (aboutScrollWrapper && aboutScrollBar) {
     const updateAboutScroll = () => {
@@ -596,6 +1088,38 @@ if (aboutScrollWrapper && aboutScrollBar) {
             ease: "power2.out",
             overwrite: "auto",
         });
+
+        if (aboutScrollHint) {
+            let label;
+            if (progress < 0.2) {
+                label = "Intro";
+            } else if (progress < 0.5) {
+                label = "Skills";
+            } else if (progress < 0.8) {
+                label = "Process";
+            } else {
+                label = "Credits";
+            }
+
+            const nextText = `» ${label}`;
+            if (aboutScrollHint.textContent !== nextText) {
+                gsap.to(aboutScrollHint, {
+                    opacity: 0,
+                    y: 4,
+                    duration: 0.12,
+                    ease: "power1.in",
+                    onComplete: () => {
+                        aboutScrollHint.textContent = nextText;
+                        gsap.to(aboutScrollHint, {
+                            opacity: 0.85,
+                            y: 0,
+                            duration: 0.18,
+                            ease: "power2.out",
+                        });
+                    },
+                });
+            }
+        }
     };
 
     aboutScrollWrapper.addEventListener("scroll", updateAboutScroll);
@@ -603,435 +1127,8 @@ if (aboutScrollWrapper && aboutScrollBar) {
     updateAboutScroll();
 }
 
-// -------------------------- ABOUT VIBE & THEME DICE -------------------------- //
-const vibeButton = document.querySelector(".vibe-button");
-const vibeLine = document.querySelector(".vibe-line");
-const themeDiceButton = document.querySelector(".vibe-theme-button");
-const themeLine = document.querySelector(".vibe-theme-line");
-const aboutModalRoot = document.querySelector(".about.modal");
-const overlayEl = document.querySelector(".overlay");
 
-if (vibeButton && vibeLine && aboutModalRoot) {
-    const vibeSentences = [
-        "polishing tiny interactions and overthinking particles.",
-        "turning VR training into something that feels like a game.",
-        "tweaking hand interactions until they finally feel natural.",
-        "daydreaming about cozy balcony gardens and liminal rooms.",
-        "balancing C# scripts with way too many Notion pages.",
-        "saving reference screenshots ‘for later’… again.",
-        "testing physics by throwing things around in play mode.",
-        "adding one more sound effect because it needs more juice.",
-        "connecting tiny story beats to simple interactions.",
-        "imagining how a stranger will feel the first time they load this scene.",
-        "giving UI elements personalities and moods in my head.",
-        "rewatching favourite scenes just to study pacing and framing.",
-    ];
 
-    function runVibeVisualEffect() {
-        const effects = [];
-
-        // 1) jelly wobble of the about window
-        effects.push(() => {
-            gsap.fromTo(
-                aboutModalRoot,
-                { x: 0, y: 0, rotation: 0 },
-                {
-                    x: gsap.utils.random(-5, 5),
-                    y: gsap.utils.random(-3, 3),
-                    rotation: gsap.utils.random(-1.5, 1.5),
-                    duration: 0.08,
-                    repeat: 6,
-                    yoyo: true,
-                    ease: "power1.inOut",
-                }
-            );
-        });
-
-        // 2) soft glow pulse around the modal
-        effects.push(() => {
-            const originalBoxShadow = window.getComputedStyle(
-                aboutModalRoot
-            ).boxShadow;
-            gsap.to(aboutModalRoot, {
-                boxShadow: "0 0 40px rgba(255,214,236,0.95)",
-                duration: 0.25,
-                yoyo: true,
-                repeat: 1,
-                ease: "power2.out",
-                onComplete: () => {
-                    aboutModalRoot.style.boxShadow = originalBoxShadow;
-                },
-            });
-        });
-
-        // 3) vignette pulse using the overlay
-        if (overlayEl) {
-            effects.push(() => {
-                const originalBg = window.getComputedStyle(
-                    overlayEl
-                ).backgroundColor;
-                gsap.fromTo(
-                    overlayEl,
-                    { backgroundColor: "rgba(0,0,0,0.25)" },
-                    {
-                        backgroundColor: "rgba(0,0,0,0.55)",
-                        duration: 0.2,
-                        yoyo: true,
-                        repeat: 1,
-                        ease: "power1.inOut",
-                        onComplete: () => {
-                            overlayEl.style.backgroundColor = originalBg;
-                        },
-                    }
-                );
-            });
-        }
-
-        // 4) XP +5 floating badge
-        effects.push(() => {
-            const badge = document.createElement("div");
-            badge.textContent = "XP +5";
-            badge.style.position = "fixed";
-            badge.style.top = "16%";
-            badge.style.right = "14%";
-            badge.style.zIndex = "10001";
-            badge.style.padding = "6px 14px";
-            badge.style.borderRadius = "999px";
-            badge.style.background =
-                "linear-gradient(135deg, #ffd6ec, #e4d6ff)";
-            badge.style.color = "#3b1c52";
-            badge.style.fontFamily =
-                "Motley Forces, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-            badge.style.fontSize = "14px";
-            badge.style.boxShadow = "0 8px 20px rgba(0,0,0,0.25)";
-            badge.style.pointerEvents = "none";
-            badge.style.opacity = "0";
-            badge.style.transform = "translateY(8px)";
-
-            document.body.appendChild(badge);
-
-            gsap.to(badge, {
-                opacity: 1,
-                y: -4,
-                duration: 0.25,
-                ease: "power2.out",
-            });
-
-            gsap.to(badge, {
-                opacity: 0,
-                y: -24,
-                duration: 0.45,
-                delay: 0.9,
-                ease: "power2.in",
-                onComplete: () => badge.remove(),
-            });
-        });
-
-        // 5) quick cinematic bars
-        effects.push(() => {
-            const topBar = document.createElement("div");
-            const bottomBar = document.createElement("div");
-            [topBar, bottomBar].forEach((bar) => {
-                bar.style.position = "fixed";
-                bar.style.left = "0";
-                bar.style.width = "100vw";
-                bar.style.height = "10vh";
-                bar.style.background = "rgba(0,0,0,0.9)";
-                bar.style.zIndex = "10000";
-                bar.style.pointerEvents = "none";
-            });
-            topBar.style.top = "-10vh";
-            bottomBar.style.bottom = "-10vh";
-
-            document.body.appendChild(topBar);
-            document.body.appendChild(bottomBar);
-
-            gsap.to(topBar, {
-                top: "0",
-                duration: 0.25,
-                ease: "power2.out",
-            });
-            gsap.to(bottomBar, {
-                bottom: "0",
-                duration: 0.25,
-                ease: "power2.out",
-            });
-
-            gsap.to([topBar, bottomBar], {
-                opacity: 0,
-                duration: 0.4,
-                delay: 1,
-                ease: "power2.in",
-                onComplete: () => {
-                    topBar.remove();
-                    bottomBar.remove();
-                },
-            });
-        });
-
-        if (!effects.length) return;
-        const effect = effects[Math.floor(Math.random() * effects.length)];
-        if (typeof effect === "function") effect();
-    }
-
-    vibeButton.addEventListener("click", () => {
-        const current = vibeLine.textContent || "";
-        let next = current;
-        let safety = 0;
-
-        while (next === current && safety < 25) {
-            const choice =
-                vibeSentences[Math.floor(Math.random() * vibeSentences.length)];
-            next = "Currently: " + choice;
-            safety++;
-        }
-
-        gsap.fromTo(
-            vibeButton,
-            { scale: 0.95 },
-            { scale: 1, duration: 0.18, ease: "power2.out" }
-        );
-
-        gsap.to(vibeLine, {
-            opacity: 0,
-            y: 4,
-            duration: 0.15,
-            onComplete: () => {
-                vibeLine.textContent = next;
-                gsap.to(vibeLine, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.22,
-                    ease: "power2.out",
-                });
-            },
-        });
-
-        runVibeVisualEffect();
-    });
-}
-
-if (themeDiceButton && themeLine && aboutModalRoot) {
-    const themeRolls = [
-        {
-            id: "fantasy",
-            label: "Fantasy",
-            text: "Fantasy: violet fire vibes, quiet magic, and little runes hidden in the details.",
-        },
-        {
-            id: "aesthetic",
-            label: "Aesthetic",
-            text: "Aesthetic: soft gradients, cozy light, clean UI and tiny sparkles of chaos.",
-        },
-        {
-            id: "developer",
-            label: "Developer",
-            text: "Developer: build logs, debug cubes, refactors, and ‘what if we tried this?’ energy.",
-        },
-        {
-            id: "story",
-            label: "Story / Immersion",
-            text: "Story / Immersion: pacing, atmosphere, subtle sound cues and feelings-first design.",
-        },
-        {
-            id: "gamer",
-            label: "Gamer",
-            text: "Gamer: XP popups, loot energy, little secrets and ‘one more run’ vibes.",
-        },
-    ];
-
-    function runThemeEffect(themeId) {
-        if (!aboutModalRoot) return;
-
-        if (themeId === "fantasy") {
-            // glowing magic ring in the center
-            const ring = document.createElement("div");
-            ring.style.position = "fixed";
-            ring.style.left = "50%";
-            ring.style.top = "50%";
-            ring.style.transform = "translate(-50%, -50%)";
-            ring.style.width = "260px";
-            ring.style.height = "260px";
-            ring.style.borderRadius = "999px";
-            ring.style.border = "2px solid rgba(186, 140, 255, 0.9)";
-            ring.style.boxShadow =
-                "0 0 30px rgba(173, 127, 255, 0.9), 0 0 60px rgba(120, 88, 200, 0.8)";
-            ring.style.zIndex = "10001";
-            ring.style.pointerEvents = "none";
-            ring.style.opacity = "0";
-
-            document.body.appendChild(ring);
-
-            gsap.to(ring, {
-                opacity: 1,
-                duration: 0.25,
-                ease: "power2.out",
-            });
-            gsap.to(ring, {
-                opacity: 0,
-                scale: 1.06,
-                duration: 0.7,
-                delay: 0.6,
-                ease: "power2.inOut",
-                onComplete: () => ring.remove(),
-            });
-        } else if (themeId === "aesthetic") {
-            // pastel gradient flash on the about window
-            const originalBg = window.getComputedStyle(
-                aboutModalRoot
-            ).backgroundImage;
-            gsap.to(aboutModalRoot, {
-                backgroundImage:
-                    "linear-gradient(135deg, rgba(255,214,236,0.95), rgba(228,214,255,0.98))",
-                duration: 0.3,
-                ease: "power2.out",
-                yoyo: true,
-                repeat: 1,
-                onComplete: () => {
-                    aboutModalRoot.style.backgroundImage = originalBg;
-                },
-            });
-        } else if (themeId === "developer") {
-            // dev console toast
-            const toast = document.createElement("div");
-            toast.textContent = "build succeeded: 0 errors, 3 warnings (all vibes)";
-            toast.style.position = "fixed";
-            toast.style.top = "18px";
-            toast.style.left = "50%";
-            toast.style.transform = "translateX(-50%)";
-            toast.style.padding = "8px 16px";
-            toast.style.borderRadius = "8px";
-            toast.style.background = "#111827ee";
-            toast.style.color = "#e5e7eb";
-            toast.style.fontFamily =
-                "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace";
-            toast.style.fontSize = "13px";
-            toast.style.zIndex = "10002";
-            toast.style.opacity = "0";
-
-            document.body.appendChild(toast);
-
-            gsap.to(toast, {
-                opacity: 1,
-                y: 4,
-                duration: 0.2,
-                ease: "power2.out",
-            });
-            gsap.to(toast, {
-                opacity: 0,
-                y: -4,
-                duration: 0.35,
-                delay: 1.3,
-                ease: "power2.in",
-                onComplete: () => toast.remove(),
-            });
-        } else if (themeId === "story") {
-            // cinematic black bars (storytelling / immersion)
-            const topBar = document.createElement("div");
-            const bottomBar = document.createElement("div");
-            [topBar, bottomBar].forEach((bar) => {
-                bar.style.position = "fixed";
-                bar.style.left = "0";
-                bar.style.width = "100vw";
-                bar.style.height = "14vh";
-                bar.style.background = "rgba(0,0,0,0.95)";
-                bar.style.zIndex = "10000";
-                bar.style.pointerEvents = "none";
-            });
-            topBar.style.top = "-14vh";
-            bottomBar.style.bottom = "-14vh";
-
-            document.body.appendChild(topBar);
-            document.body.appendChild(bottomBar);
-
-            gsap.to(topBar, {
-                top: "0",
-                duration: 0.28,
-                ease: "power2.out",
-            });
-            gsap.to(bottomBar, {
-                bottom: "0",
-                duration: 0.28,
-                ease: "power2.out",
-            });
-
-            gsap.to([topBar, bottomBar], {
-                opacity: 0,
-                duration: 0.4,
-                delay: 1.1,
-                ease: "power2.in",
-                onComplete: () => {
-                    topBar.remove();
-                    bottomBar.remove();
-                },
-            });
-        } else if (themeId === "gamer") {
-            // gamer-style level up popup
-            const popup = document.createElement("div");
-            popup.textContent = "LEVEL UP: Immersive Dev +1";
-            popup.style.position = "fixed";
-            popup.style.bottom = "13%";
-            popup.style.left = "50%";
-            popup.style.transform = "translateX(-50%)";
-            popup.style.padding = "10px 18px";
-            popup.style.borderRadius = "999px";
-            popup.style.background =
-                "linear-gradient(135deg, #22c55e, #4ade80)";
-            popup.style.color = "#022c22";
-            popup.style.fontFamily =
-                "Motley Forces, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-            popup.style.fontSize = "15px";
-            popup.style.zIndex = "10002";
-            popup.style.opacity = "0";
-            popup.style.boxShadow = "0 10px 22px rgba(0,0,0,0.35)";
-
-            document.body.appendChild(popup);
-
-            gsap.to(popup, {
-                opacity: 1,
-                y: -4,
-                duration: 0.22,
-                ease: "power2.out",
-            });
-            gsap.to(popup, {
-                opacity: 0,
-                y: -26,
-                duration: 0.4,
-                delay: 1.1,
-                ease: "power2.in",
-                onComplete: () => popup.remove(),
-            });
-        }
-    }
-
-    themeDiceButton.addEventListener("click", () => {
-        const choice =
-            themeRolls[Math.floor(Math.random() * themeRolls.length)];
-
-        gsap.fromTo(
-            themeDiceButton,
-            { scale: 0.95 },
-            { scale: 1, duration: 0.18, ease: "power2.out" }
-        );
-
-        gsap.to(themeLine, {
-            opacity: 0,
-            y: 3,
-            duration: 0.14,
-            onComplete: () => {
-                themeLine.textContent = `Theme: ${choice.text}`;
-                gsap.to(themeLine, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.22,
-                    ease: "power2.out",
-                });
-            },
-        });
-
-        runThemeEffect(choice.id);
-    });
-}
 
 
 /**  -------------------------- Loading Screen & Intro Animation -------------------------- */
