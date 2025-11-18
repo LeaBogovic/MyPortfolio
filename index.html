@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lea's Portfolio Corner <3</title>
+    <title>Lea's Portfolio Corner ♡ </title>
     <link rel="stylesheet" href="./src/style.scss" />
     <link rel="icon" type="image/png" href="media/dark-favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/media/dark-faviconfavicon.svg" />
@@ -187,6 +187,7 @@
                 </div>
             </div>
         </div>
+        <div class="about-cursor"></div>
         <button class="modal-exit-button">
             <svg width="98"
                  height="96"
@@ -206,10 +207,16 @@
                       fill="currentColor" />
             </svg>
         </button>
+
     </div>
+
     <div class="about modal">
         <div class="modal-wrapper">
             <h1 class="modal-title">🌸 ~ About Me ~</h1>
+
+            <div class="about-scroll-track">
+                <div class="about-scroll-bar"></div>
+            </div>
 
             <div class="modal-content">
                 <div class="modal-content-wrapper">
@@ -243,6 +250,9 @@
                                 Immersive developer, storyteller & gamer at heart 💜
                             </h2>
 
+                            <p class="modal-paragraph-text about-typed-line"></p>
+
+
                             <p class="modal-paragraph-text">
                                 Hi! I'm <strong>Lea Bogovic</strong> — a VR & game developer who loves building
                                 experiences that feel alive, emotional, and immersive. I'm completing my Bachelor’s
@@ -256,6 +266,28 @@
                                 languages right now are <strong>C#</strong> and <strong>HTML</strong>, and I love using
                                 them to turn ideas into spaces people can actually step into.
                             </p>
+
+                            <!-- Persona toggle -->
+                            <div class="persona-switch">
+                                <button class="persona-btn is-active" data-persona="dev">Developer</button>
+                                <button class="persona-btn" data-persona="creator">Creator</button>
+                                <button class="persona-btn" data-persona="gamer">Gamer-at-heart</button>
+                            </div>
+
+                            <p class="modal-paragraph-text persona-text">
+                                As a developer, I love solving interaction problems — especially in VR. Things like
+                                “how should this feel in someone’s hands?” or “what feedback tells the player they did
+                                the right thing?” are the kind of questions I enjoy turning into code.
+                            </p>
+
+                            <div class="vibe-row">
+                                <button class="vibe-button" type="button">
+                                    Roll a vibe 🎲
+                                </button>
+                                <p class="modal-paragraph-text vibe-line">
+                                    Currently: polishing tiny interactions and overthinking particles.
+                                </p>
+                            </div>
 
                             <h2 class="modal-paragraph-header">🌿 What drives my work</h2>
                             <ul>
@@ -273,6 +305,34 @@
                                 </li>
                             </ul>
 
+                            <div class="funfacts-row">
+                                <button class="funfact-chip"
+                                        type="button"
+                                        data-fact="I get emotionally attached to my projects way too fast — in a good way.">
+                                    💾
+                                </button>
+                                <button class="funfact-chip"
+                                        type="button"
+                                        data-fact="I love when VR training feels more like a game than a checklist.">
+                                    🎮
+                                </button>
+                                <button class="funfact-chip"
+                                        type="button"
+                                        data-fact="I over-document everything – screenshots, notes, tiny devlogs.">
+                                    📓
+                                </button>
+                                <button class="funfact-chip"
+                                        type="button"
+                                        data-fact="If something has particles and sound design, I will obsess over it.">
+                                    ✨
+                                </button>
+                            </div>
+
+                            <p class="modal-paragraph-text funfact-text">
+                                Hover the icons to reveal small truths about how I work.
+                            </p>
+
+
                             <!-- Fun skill chips -->
                             <div class="pill-row">
                                 <span class="pill">VR & Interaction Design</span>
@@ -281,6 +341,86 @@
                                 <span class="pill">Storytelling</span>
                                 <span class="pill">Immersive Worlds</span>
                             </div>
+                            <h2 class="modal-paragraph-header">🧪 Skills at a glance</h2>
+
+                            <div class="skills-grid">
+                                <!-- Programming Languages -->
+                                <div class="skills-group">
+                                    <h3 class="skills-group-title">Programming Languages</h3>
+                                    <div class="pill-row">
+                                        <button class="pill about-chip" data-color="#f9d5ff">
+                                            C#
+                                        </button>
+                                        <button class="pill about-chip" data-color="#d6e5ff">
+                                            C++
+                                        </button>
+                                        <button class="pill about-chip" data-color="#ffe6c7">
+                                            Java
+                                        </button>
+                                        <button class="pill about-chip" data-color="#d5ffe9">
+                                            JavaScript
+                                        </button>
+                                        <button class="pill about-chip" data-color="#e6ffd5">
+                                            SQL
+                                        </button>
+                                        <button class="pill about-chip" data-color="#ffd5e8">
+                                            HTML / CSS / SCSS
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Tools & Engines -->
+                                <div class="skills-group">
+                                    <h3 class="skills-group-title">Tools & Engines</h3>
+                                    <div class="pill-row">
+                                        <button class="pill about-chip" data-color="#dbe0ff">
+                                            Unity (VR & Games)
+                                        </button>
+                                        <button class="pill about-chip" data-color="#e4f9ff">
+                                            Three.js
+                                        </button>
+                                        <button class="pill about-chip" data-color="#f8e0ff">
+                                            Meta / OpenXR
+                                        </button>
+                                        <button class="pill about-chip" data-color="#ffe8f0">
+                                            Blender
+                                        </button>
+                                        <button class="pill about-chip" data-color="#e3ffe8">
+                                            Git & GitHub
+                                        </button>
+                                        <button class="pill about-chip" data-color="#fff3d5">
+                                            VS Code / Rider
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Creative Focus Areas -->
+                                <div class="skills-group">
+                                    <h3 class="skills-group-title">Creative Focus Areas</h3>
+                                    <div class="pill-row">
+                                        <button class="pill about-chip" data-color="#fce0ff">
+                                            VR Interaction Design
+                                        </button>
+                                        <button class="pill about-chip" data-color="#e0fff5">
+                                            Hand Tracking & Physics
+                                        </button>
+                                        <button class="pill about-chip" data-color="#ffe0e0">
+                                            Narrative & Emotional Design
+                                        </button>
+                                        <button class="pill about-chip" data-color="#e0f3ff">
+                                            Immersive UX & Spatial Flow
+                                        </button>
+                                        <button class="pill about-chip" data-color="#f3ffe0">
+                                            Educational / Training VR
+                                        </button>
+                                        <button class="pill about-chip" data-color="#f9e6ff">
+                                            Rapid Prototyping & Play
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
 
                         <!-- TAB 2: BEYOND WORK (HOBBIES / LIFE) -->

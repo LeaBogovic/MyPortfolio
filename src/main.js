@@ -10,8 +10,16 @@ import smokeFragmentShader from "./shaders/smoke/fragment.glsl";
 import themeVertexShader from "./shaders/theme/vertex.glsl";
 import themeFragmentShader from "./shaders/theme/fragment.glsl";
 
-// 👇 ADD THIS
+let aboutIntroTyped = false;
+const ABOUT_INTRO_TEXT =
+    "VR & game developer crafting cozy, immersive spaces you can step into.";
+
+
 const ASSET_BASE = import.meta.env.BASE_URL;
+
+// ✅ ADD THIS RIGHT HERE:
+const manager = new THREE.LoadingManager();
+
 
 /**  -------------------------- Audio setup -------------------------- */
 
@@ -261,7 +269,6 @@ const showModal = (modal) => {
         playHoverAnimation(currentHoveredObject, false);
         currentHoveredObject = null;
     }
-
     document.body.style.cursor = "default";
     currentIntersects = [];
 
@@ -286,50 +293,116 @@ const showModal = (modal) => {
         ease: "back.out(2)",
     });
 
-    // ✅ Extra: if this is the About modal, do a small 3D focus effect
     if (modal.classList.contains("about")) {
-        // Example: animate camera a little closer / shifted
-        gsap.to(camera.position, {
-            x: camera.position.x + 0.2,
-            y: camera.position.y + 0.1,
-            z: camera.position.z + 0.1,
-            duration: 0.8,
-            ease: "power2.out",
-        });
+        document.body.classList.add("about-open");
 
-        // Optional: if you have a deskLight, give it a soft pulse
-        if (window.deskLight) {
-            gsap.to(deskLight, {
-                intensity: 1.4,
-                duration: 0.5,
-                yoyo: true,
-                repeat: 1,
-            });
+        // 📝 Trigger typewriter only once
+        if (!aboutIntroTyped) {
+            const typedEl = modal.querySelector(".about-typed-line");
+            if (typedEl) {
+                aboutIntroTyped = true;
+                typeAboutIntro(typedEl);
+            }
         }
     }
 };
 
 
+
+
 const hideModal = (modal) => {
-  isModalOpen = false;
-  controls.enabled = true;
+    isModalOpen = false;
+    controls.enabled = true;
 
-  gsap.to(overlay, {
-    opacity: 0,
-    duration: 0.5,
-  });
+    gsap.to(overlay, {
+        opacity: 0,
+        duration: 0.5,
+    });
 
-  gsap.to(modal, {
-    opacity: 0,
-    scale: 0,
-    duration: 0.5,
-    ease: "back.in(2)",
-    onComplete: () => {
-      modal.style.display = "none";
-      overlay.style.display = "none";
-    },
-  });
+    gsap.to(modal, {
+        opacity: 0,
+        scale: 0,
+        duration: 0.5,
+        ease: "back.in(2)",
+        onComplete: () => {
+            modal.style.display = "none";
+            overlay.style.display = "none";
+
+            // 🌸 Remove special background when About closes
+            if (modal.classList.contains("about")) {
+                document.body.classList.remove("about-open");
+            }
+        },
+    });
 };
+
+// -------------------------- ABOUT VIBE ROLLER -------------------------- //
+const vibeButton = document.querySelector(".vibe-button");
+const vibeLine = document.querySelector(".vibe-line");
+
+if (vibeButton && vibeLine) {
+    const vibes = [
+        "Currently: polishing tiny interactions and overthinking particles.",
+        "Currently: daydreaming about cozy VR spaces and balcony gardens.",
+        "Currently: fighting lighting settings but winning (slowly).",
+        "Currently: thinking about how to make training feel like a game.",
+        "Currently: storing way too many screenshots ‘for later reference’.",
+        "Currently: balancing logic, vibes, and a bit of chaos.",
+    ];
+
+    vibeButton.addEventListener("click", () => {
+        const current = vibeLine.textContent || "";
+        // pick a different vibe than the current one
+        let next = current;
+        let safety = 0;
+        while (next === current && safety < 10) {
+            next = "Currently: " + vibes[Math.floor(Math.random() * vibes.length)].replace(/^Currently:\s*/i, "");
+            safety++;
+        }
+
+        gsap.fromTo(
+            vibeButton,
+            { scale: 0.95 },
+            { scale: 1, duration: 0.15, ease: "power2.out" }
+        );
+
+        gsap.to(vibeLine, {
+            opacity: 0,
+            y: 3,
+            duration: 0.15,
+            onComplete: () => {
+                vibeLine.textContent = next;
+                gsap.to(vibeLine, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.2,
+                    ease: "power2.out",
+                });
+            },
+        });
+    });
+}
+
+
+// -------------------------- ABOUT INTRO TYPEWRITER -------------------------- //
+function typeAboutIntro(targetEl) {
+    targetEl.textContent = "";
+    const chars = ABOUT_INTRO_TEXT.split("");
+    let index = 0;
+
+    const step = () => {
+        if (index > chars.length) return;
+        targetEl.textContent = chars.slice(0, index).join("");
+        index++;
+
+        // cute variable speed
+        const delay = gsap.utils.random(25, 55);
+        setTimeout(step, delay);
+    };
+
+    step();
+}
+
 
 // -------------------------- About modal tabs -------------------------- //
 const aboutTabButtons = document.querySelectorAll(".about-tab-button");
@@ -361,8 +434,135 @@ if (aboutTabButtons.length && aboutTabContents.length) {
             });
         });
     });
-
 }
+
+// -------------------------- ABOUT PERSONA SWITCH -------------------------- //
+const personaButtons = document.querySelectorAll(".persona-btn");
+const personaTextEl = document.querySelector(".persona-text");
+
+if (personaButtons.length && personaTextEl) {
+    const personaCopy = {
+        dev: `As a developer, I love solving interaction problems — especially in VR. Things like “how should this feel in someone’s hands?” or “what feedback tells the player they did the right thing?” are the kind of questions I enjoy turning into code.`,
+        creator: `As a creator, I’m obsessed with mood, pacing, and the little details people don’t always notice at first — sounds, particles, camera framing, tiny story hints that make a space feel lived-in and emotionally grounded.`,
+        gamer: `As a gamer-at-heart, I think a lot about how it feels to be on the other side of the screen. I love designing experiences that pull people in the same way my favourite games, films, and stories pull me in.`,
+    };
+
+    personaButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const key = btn.getAttribute("data-persona");
+
+            // update active button state
+            personaButtons.forEach((b) => b.classList.remove("is-active"));
+            btn.classList.add("is-active");
+
+            // small click animation
+            gsap.fromTo(
+                btn,
+                { scale: 0.94 },
+                { scale: 1, duration: 0.15, ease: "power2.out" }
+            );
+
+            // fade text out, swap, fade in
+            if (key && personaCopy[key]) {
+                gsap.to(personaTextEl, {
+                    opacity: 0,
+                    y: 4,
+                    duration: 0.15,
+                    onComplete: () => {
+                        personaTextEl.textContent = personaCopy[key];
+                        gsap.to(personaTextEl, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.2,
+                            ease: "power2.out",
+                        });
+                    },
+                });
+            }
+        });
+    });
+}
+
+
+// -------------------------- ABOUT SKILL HOVER COLORS -------------------------- //
+const aboutModalEl = document.querySelector(".about.modal");
+const aboutChips = document.querySelectorAll(".about-chip");
+
+if (aboutModalEl && aboutChips.length) {
+    const defaultAboutBg = window.getComputedStyle(aboutModalEl).backgroundColor;
+
+    aboutChips.forEach((chip) => {
+        chip.addEventListener("mouseenter", () => {
+            const color = chip.getAttribute("data-color");
+            if (!color) return;
+
+            // cancel any previous background tweens before starting a new one
+            gsap.to(aboutModalEl, {
+                backgroundColor: color,
+                duration: 0.25,
+                ease: "power2.out",
+                overwrite: "auto",
+            });
+        });
+
+        chip.addEventListener("mouseleave", () => {
+            gsap.to(aboutModalEl, {
+                backgroundColor: defaultAboutBg,
+                duration: 0.25,
+                ease: "power2.out",
+                overwrite: "auto",
+            });
+        });
+    });
+}
+
+// -------------------------- ABOUT FUN FACT HOVERS -------------------------- //
+const funfactChips = document.querySelectorAll(".funfact-chip");
+const funfactText = document.querySelector(".funfact-text");
+
+if (funfactChips.length && funfactText) {
+    const defaultFact = funfactText.textContent;
+
+    funfactChips.forEach((chip) => {
+        chip.addEventListener("mouseenter", () => {
+            const fact = chip.getAttribute("data-fact");
+            if (!fact) return;
+
+            gsap.to(funfactText, {
+                opacity: 0,
+                y: 3,
+                duration: 0.15,
+                onComplete: () => {
+                    funfactText.textContent = fact;
+                    gsap.to(funfactText, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.2,
+                        ease: "power2.out",
+                    });
+                },
+            });
+        });
+
+        chip.addEventListener("mouseleave", () => {
+            gsap.to(funfactText, {
+                opacity: 0,
+                y: 3,
+                duration: 0.15,
+                onComplete: () => {
+                    funfactText.textContent = defaultFact;
+                    gsap.to(funfactText, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.2,
+                        ease: "power2.out",
+                    });
+                },
+            });
+        });
+    });
+}
+
 
 // -------------------------- About image parallax -------------------------- //
 const aboutModal = document.querySelector(".about.modal");
@@ -371,13 +571,13 @@ const aboutImage = aboutModal?.querySelector(".base-image");
 if (aboutModal && aboutImage) {
     aboutModal.addEventListener("mousemove", (event) => {
         const rect = aboutModal.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width - 0.5;   // -0.5 to 0.5
-        const y = (event.clientY - rect.top) / rect.height - 0.5;  // -0.5 to 0.5
+        const x = (event.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+        const y = (event.clientY - rect.top) / rect.height - 0.5; // -0.5 to 0.5
 
         gsap.to(aboutImage, {
-            rotationY: x * 6,      // left/right tilt
-            rotationX: -y * 6,     // up/down tilt
-            x: x * 10,             // small slide
+            rotationY: x * 6, // left/right tilt
+            rotationX: -y * 6, // up/down tilt
+            x: x * 10, // small slide
             y: y * 10,
             transformPerspective: 600,
             transformOrigin: "center center",
@@ -398,12 +598,59 @@ if (aboutModal && aboutImage) {
     });
 }
 
+// -------------------------- ABOUT CUSTOM CURSOR -------------------------- //
+const aboutModalForCursor = document.querySelector(".about.modal");
+const aboutCursor = document.querySelector(".about-cursor");
+
+if (aboutModalForCursor && aboutCursor) {
+    aboutModalForCursor.addEventListener("mousemove", (event) => {
+        gsap.to(aboutCursor, {
+            x: event.clientX,
+            y: event.clientY,
+            duration: 0.12,
+            ease: "power2.out",
+            overwrite: "auto",
+        });
+    });
+
+    aboutModalForCursor.addEventListener("mouseleave", () => {
+        gsap.to(aboutCursor, {
+            opacity: 0,
+            duration: 0.18,
+            ease: "power2.out",
+        });
+    });
+}
+
+
+// -------------------------- ABOUT SCROLL PROGRESS -------------------------- //
+const aboutScrollWrapper = document.querySelector(
+    ".about.modal .modal-content-wrapper"
+);
+const aboutScrollBar = document.querySelector(".about-scroll-bar");
+
+if (aboutScrollWrapper && aboutScrollBar) {
+    const updateAboutScroll = () => {
+        const maxScroll =
+            aboutScrollWrapper.scrollHeight - aboutScrollWrapper.clientHeight;
+        const progress = maxScroll > 0 ? aboutScrollWrapper.scrollTop / maxScroll : 0;
+
+        gsap.to(aboutScrollBar, {
+            width: `${progress * 100}%`,
+            duration: 0.2,
+            ease: "power2.out",
+            overwrite: "auto",
+        });
+    };
+
+    aboutScrollWrapper.addEventListener("scroll", updateAboutScroll);
+    // set initial state
+    updateAboutScroll();
+}
 
 
 
 /**  -------------------------- Loading Screen & Intro Animation -------------------------- */
-
-const manager = new THREE.LoadingManager();
 
 const loadingScreen = document.querySelector(".loading-screen");
 const loadingScreenButton = document.querySelector(".loading-screen-button");
@@ -1136,8 +1383,8 @@ function playIntroAnimation() {
   });
 }
 
-/**  -------------------------- Loaders & Texture Preparations -------------------------- */
-const textureLoader = new THREE.TextureLoader();
+        /**  -------------------------- Loaders & Texture Preparations -------------------------- */
+        const textureLoader = new THREE.TextureLoader(manager);
 
 // --- Poster Textures ---
 const frame1Texture = textureLoader.load("/images/image1.webp");
@@ -1686,7 +1933,7 @@ let currentHoveredObject = null;
 
 const socialLinks = {
     GitHub: "https://github.com/LeaBogovic",
-  YouTube: "https://youtu.be/AB6sulUMRGE",
+    YouTube: "https://www.youtube.com/watch?v=OqryGDjhtSA",
   Twitter: "https://www.twitter.com/",
 };
 
