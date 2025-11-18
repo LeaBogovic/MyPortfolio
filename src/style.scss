@@ -431,6 +431,191 @@ body.about-open {
     z-index: 5;
 }
 
+/* CONTACT ICONS */
+.contact-button-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+
+/* Contact Buttons with Icons */
+.contact-button-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+    margin-top: 1.2rem;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    padding: 0.55rem 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: 0.25s ease;
+}
+
+.contact-link:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.contact-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.contact-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--text-color, #fff);
+}
+
+/* ---------------- WORK MODAL ---------------- */
+
+.work.modal .modal-content-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.work-intro {
+    text-align: center;
+}
+
+.work-section-title {
+    text-align: center;
+    margin-bottom: 1.3rem;
+}
+
+/* Card grid */
+.work-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.6rem;
+}
+
+@media (max-width: 900px) {
+    .work-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .work-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Individual card */
+.work-card {
+    background: rgba(255, 255, 255, 0.28);
+    border-radius: 20px;
+    padding: 0.9rem 0.9rem 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 10px 22px rgba(150, 120, 200, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.work-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 28px rgba(150, 120, 200, 0.32);
+    background: rgba(255, 255, 255, 0.34);
+}
+
+/* Image */
+.work-card-image {
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+}
+
+.work-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Text */
+.work-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.work-card-title {
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.work-card-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Tags reuse your .pill style but a bit tighter */
+.work-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+}
+
+.work-card-tags .pill {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.55rem;
+}
+
+.work-footer {
+    margin-top: 0.8rem;
+    text-align: center;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  padding: 0.55rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: 0.25s ease;
+}
+
+.contact-link:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.contact-icon img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.contact-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text-color, #fff);
+}
+
 
 .contact {
   max-width: 500px;
@@ -1452,4 +1637,74 @@ ul {
     border-radius: 1.2rem;
     &:hover { background: #d2cfff; }
   }
+}
+.contact-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contact-content {
+    text-align: center;
+}
+
+.contact-intro {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+}
+
+.contact-body {
+    margin-top: 0.3rem;
+}
+
+.contact-choice {
+    margin-top: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.4rem;
+    margin-top: 0.3rem;
+}
+
+.contact-link {
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 2px dashed transparent;
+    transition: 0.18s ease;
+}
+
+.contact-link:hover {
+    transform: translateY(-2px);
+    border-bottom-color: currentColor;
+}
+
+.contact-stars {
+    margin-top: 1.4rem;
+    font-size: 1.5rem;
+    animation: contactStarsFloat 2.4s ease-in-out infinite;
+}
+
+@keyframes contactStarsFloat {
+    0% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
 }

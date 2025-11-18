@@ -296,6 +296,13 @@ const showModal = (modal) => {
     if (modal.classList.contains("about")) {
         document.body.classList.add("about-open");
 
+        const popup = modal.querySelector(".about-photo-popup");
+        if (popup) popup.remove();
+        if (aboutPhotoPopupTimeout) {
+            clearTimeout(aboutPhotoPopupTimeout);
+            aboutPhotoPopupTimeout = null;
+        }
+
         // 📝 Trigger typewriter only once
         if (!aboutIntroTyped) {
             const typedEl = modal.querySelector(".about-typed-line");
@@ -370,8 +377,17 @@ if (aboutTabButtons.length && aboutTabContents.length) {
                     section.classList.remove("is-active");
                 }
             });
+
+            // hide any open photo popup when switching sections
+            const popup = aboutModalEl.querySelector(".about-photo-popup");
+            if (popup) popup.remove();
+            if (aboutPhotoPopupTimeout) {
+                clearTimeout(aboutPhotoPopupTimeout);
+                aboutPhotoPopupTimeout = null;
+            }
         });
     });
+   
 }
 
 // -------------------------- ABOUT PERSONA SWITCH -------------------------- //
@@ -537,6 +553,8 @@ if (aboutModal && aboutImage) {
 }
 
 // -------------------------- ABOUT PHOTO STORIES -------------------------- //
+let aboutPhotoPopupTimeout = null;
+
 const aboutPhotos = document.querySelectorAll(".about-photo");
 
 if (aboutModal && aboutPhotos.length) {
@@ -550,8 +568,9 @@ if (aboutModal && aboutPhotos.length) {
 
             // remove existing popup if any
             const existing = aboutModal.querySelector(".about-photo-popup");
+
+            // if same photo, just hide it
             if (existing && existing.dataset.source === title) {
-                // clicking the same photo toggles it off
                 gsap.to(existing, {
                     opacity: 0,
                     y: 6,
@@ -559,6 +578,10 @@ if (aboutModal && aboutPhotos.length) {
                     ease: "power2.in",
                     onComplete: () => existing.remove(),
                 });
+                if (aboutPhotoPopupTimeout) {
+                    clearTimeout(aboutPhotoPopupTimeout);
+                    aboutPhotoPopupTimeout = null;
+                }
                 return;
             } else if (existing) {
                 existing.remove();
@@ -568,9 +591,9 @@ if (aboutModal && aboutPhotos.length) {
             popup.className = "about-photo-popup";
             popup.dataset.source = title;
             popup.innerHTML = `
-                <div class="about-photo-popup-title">${title}</div>
-                <div class="about-photo-popup-body">${detail}</div>
-            `;
+      <div class="about-photo-popup-title">${title}</div>
+      <div class="about-photo-popup-body">${detail}</div>
+    `;
 
             aboutModal.appendChild(popup);
 
@@ -579,8 +602,26 @@ if (aboutModal && aboutPhotos.length) {
                 { opacity: 0, y: 8 },
                 { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }
             );
+
+            // ⏱ auto-hide after 12s
+            if (aboutPhotoPopupTimeout) {
+                clearTimeout(aboutPhotoPopupTimeout);
+            }
+
+            aboutPhotoPopupTimeout = setTimeout(() => {
+                if (!popup.isConnected) return;
+                gsap.to(popup, {
+                    opacity: 0,
+                    y: 6,
+                    duration: 0.25,
+                    ease: "power2.in",
+                    onComplete: () => popup.remove(),
+                });
+                aboutPhotoPopupTimeout = null;
+            }, 12000);
         });
     });
+
 }
 
 
