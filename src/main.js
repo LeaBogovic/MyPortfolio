@@ -396,8 +396,8 @@ const personaTextEl = document.querySelector(".persona-text");
 
 if (personaButtons.length && personaTextEl) {
     const personaCopy = {
-        dev: `As a developer, I love solving interaction problems — especially in VR. Things like “how should this feel in someone’s hands?” or “what feedback tells the player they did the right thing?” are the kind of questions I enjoy turning into code.`,
-        creator: `As a creator, I’m obsessed with mood, pacing, and the little details people don’t always notice at first — sounds, particles, camera framing, tiny story hints that make a space feel lived-in and emotionally grounded.`,
+        dev: `As a developer, I love solving interaction problems, especially in VR. Things like “how should this feel in someone’s hands?” or “what feedback tells the player they did the right thing?” are the kind of questions I enjoy turning into code.`,
+        creator: `As a creator, I’m obsessed with mood, pacing, and the little details people don’t always notice at first, sounds, particles, camera framing, tiny story hints that make a space feel lived-in and emotionally grounded.`,
         gamer: `As a gamer-at-heart, I think a lot about how it feels to be on the other side of the screen. I love designing experiences that pull people in the same way my favourite games, films, and stories pull me in.`,
     };
 
