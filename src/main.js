@@ -2984,31 +2984,33 @@ window.addEventListener(
 function zoomToMonitor() {
     if (!screenObject) return;
 
-    // Save original position & target once
     if (!originalCameraPos) {
         originalCameraPos = camera.position.clone();
         originalCameraLookAt = controls.target.clone();
     }
 
-    // 👉 You’ll probably want to tweak these numbers:
-    // Idea: move the camera closer to the screen, but still at a nice angle
-    const targetPos = new THREE.Vector3(
-        screenObject.position.x + 2.0,  // sideways offset
-        screenObject.position.y + 1.0,  // a bit above the center
-        screenObject.position.z + 2.5   // in front of the screen
-    );
+    const screenWorldPos = new THREE.Vector3();
+    screenObject.getWorldPosition(screenWorldPos);
 
-    const targetLook = new THREE.Vector3(
-        screenObject.position.x,
-        screenObject.position.y,
-        screenObject.position.z
-    );
+    const screenForward = new THREE.Vector3();
+    screenObject.getWorldDirection(screenForward);
+    screenForward.normalize();
+
+    const distance = 2.1;
+    const heightOffset = 0.3;
+
+    const targetPos = screenWorldPos
+        .clone()
+        .addScaledVector(screenForward, -distance)
+        .add(new THREE.Vector3(0, heightOffset, 0));
+
+    const targetLook = screenWorldPos.clone();
 
     gsap.to(camera.position, {
         x: targetPos.x,
         y: targetPos.y,
         z: targetPos.z,
-        duration: 1.2,
+        duration: 1.4,
         ease: "power2.inOut",
         onUpdate: () => camera.updateProjectionMatrix(),
     });
@@ -3017,14 +3019,21 @@ function zoomToMonitor() {
         x: targetLook.x,
         y: targetLook.y,
         z: targetLook.z,
-        duration: 1.2,
+        duration: 1.4,
         ease: "power2.inOut",
         onUpdate: () => camera.lookAt(controls.target),
     });
 
     const backBtn = document.getElementById("zoomBackBtn");
     if (backBtn) backBtn.style.display = "block";
+
+    const screenBtn = document.getElementById("screenButton");
+    if (screenBtn) screenBtn.style.display = "block";
 }
+
+
+
+
 
 function zoomBackOut() {
     if (!originalCameraPos || !originalCameraLookAt) return;
@@ -3033,7 +3042,7 @@ function zoomBackOut() {
         x: originalCameraPos.x,
         y: originalCameraPos.y,
         z: originalCameraPos.z,
-        duration: 1.2,
+        duration: 1.4,
         ease: "power2.inOut",
         onUpdate: () => camera.updateProjectionMatrix(),
     });
@@ -3042,14 +3051,21 @@ function zoomBackOut() {
         x: originalCameraLookAt.x,
         y: originalCameraLookAt.y,
         z: originalCameraLookAt.z,
-        duration: 1.2,
+        duration: 1.4,
         ease: "power2.inOut",
         onUpdate: () => camera.lookAt(controls.target),
     });
 
     const backBtn = document.getElementById("zoomBackBtn");
     if (backBtn) backBtn.style.display = "none";
+
+    const screenBtn = document.getElementById("screenButton");
+    if (screenBtn) screenBtn.style.display = "none";
+
+    const screenModal = document.getElementById("screenModal");
+    if (screenModal) screenModal.classList.remove("visible");
 }
+
 
 
 window.addEventListener("click", handleRaycasterInteraction);
@@ -3328,6 +3344,33 @@ const render = (timestamp) => {
 
   window.requestAnimationFrame(render);
 };
+
+const screenButton = document.getElementById("screenButton");
+const screenModal = document.getElementById("screenModal");
+const screenModalClose = document.getElementById("screenModalClose");
+
+if (screenButton && screenModal) {
+    screenButton.addEventListener("click", () => {
+        screenModal.classList.add("visible");
+    });
+}
+
+if (screenModalClose && screenModal) {
+    screenModalClose.addEventListener("click", (e) => {
+        e.stopPropagation();
+        screenModal.classList.remove("visible");
+    });
+}
+
+// Close if you click the dark backdrop
+if (screenModal) {
+    screenModal.addEventListener("click", (e) => {
+        if (e.target === screenModal) {
+            screenModal.classList.remove("visible");
+        }
+    });
+}
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const selection = document.getElementById("workSelection");

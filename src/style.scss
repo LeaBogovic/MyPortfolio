@@ -29,27 +29,12 @@ $themes: (
 );
 
 // Theme mixins
-@mixin themed() {
-  @each $theme, $map in $themes {
-    .#{$theme}-theme & {
-      $theme-map: () !global;
-      @each $key, $value in $map {
-        $theme-map: map-merge(
-          $theme-map,
-          (
-            $key: $value,
-          )
-        ) !global;
-      }
-      @content;
-      $theme-map: null !global;
-    }
-  }
+// Theme helper
+@function t($map, $key) {
+    @return map-get($map, $key);
 }
 
-@function t($key) {
-  @return map-get($theme-map, $key);
-}
+
 
 * {
   margin: 0;
@@ -387,10 +372,6 @@ body.about-open {
 .about.modal:hover {
     transform: translate(-50%, -50%) scale(1.01);
     box-shadow: 0 22px 48px rgba(0, 0, 0, 0.38);
-
-    @include themed() {
-        border-color: t("base-dark-purple");
-    }
 }
 
 .about.modal {
@@ -1471,120 +1452,97 @@ body.about-open {
   font-size: 1.2rem;
 }
 
-ul {
-  li {
-    &:before {
-      @include themed() {
-        color: t("text");
-      }
-    }
-
-    &:hover {
-      &:before {
-        @include themed() {
-          color: t("base-purple");
+@each $theme, $map in $themes {
+    .#{$theme}-theme {
+        /* Bullet colours */
+        ul li:before {
+            color: t($map, 'text');
         }
-      }
+
+        ul li:hover:before {
+            color: t($map, 'base-purple');
+        }
+        /* Image borders */
+        .base-image,
+        .work-base-image {
+            border-color: t($map, 'base-purple');
+        }
+        /* Modal shell */
+        .modal {
+            border-color: t($map, 'base-purple');
+            background-color: t($map, 'base-light-purple');
+        }
+
+        .modal-title {
+            color: t($map, 'header-text');
+            background-color: t($map, 'base-purple-200');
+        }
+
+        .modal-paragraph-header-2 {
+            border-color: t($map, 'base-purple');
+        }
+        /* Scrollbar colours */
+        .modal-content-wrapper::-webkit-scrollbar-track {
+            background-color: t($map, 'base-purple-200');
+        }
+
+        .modal-content-wrapper::-webkit-scrollbar-thumb {
+            background-color: t($map, 'base-dark-purple');
+        }
+        /* Text colours */
+        .list-text,
+        .list-text-2,
+        .modal-paragraph-header,
+        .modal-paragraph-header-2,
+        .modal-paragraph-text {
+            color: t($map, 'text');
+        }
+        /* Exit button + icon */
+        .modal-exit-button {
+            border-color: t($map, 'base-purple');
+            background-color: t($map, 'base-light-purple');
+        }
+
+        .exit-button-svg {
+            color: t($map, 'svgs');
+        }
+        /* Toggle + sound / icons */
+        .toggle-buttons {
+            border-color: t($map, 'base-purple');
+            background-color: t($map, 'base-light-purple');
+            color: t($map, 'base-purple');
+        }
+
+        .sound-svg,
+        .sound-off-svg,
+        .sun-svg,
+        .github,
+        .linkedin,
+        .instagram,
+        .mail,
+        .moon-svg {
+            stroke: t($map, 'svgs');
+            color: t($map, 'svgs');
+        }
+        /* 🎯 NEW: monitor button + window themed */
+        .screen-button {
+            background-color: t($map, 'base-light-purple');
+            color: t($map, 'header-text');
+            border: 2px solid t($map, 'base-purple');
+        }
+
+        .screen-modal-inner {
+            background-color: t($map, 'base-light-purple');
+            border: 2px solid t($map, 'base-purple');
+            color: t($map, 'text');
+        }
+
+        .screen-modal-close {
+            color: t($map, 'svgs');
+        }
     }
-  }
 }
 
-.base-image {
-  @include themed() {
-    border-color: t("base-purple");
-  }
-}
-
-.work-base-image {
-  @include themed() {
-    border-color: t("base-purple");
-  }
-}
-
-.overlay {
-  @include themed() {
-    background-color: t("overlay-bg");
-  }
-}
-
-.modal {
-  @include themed() {
-    border-color: t("base-purple");
-    background-color: t("base-light-purple");
-  }
-}
-
-.modal-title {
-  @include themed() {
-    color: t("header-text");
-    background-color: t("base-purple-200");
-  }
-}
-
-.modal-paragraph-header-2 {
-  @include themed() {
-    border-color: t("base-purple");
-  }
-}
-
-.modal-content-wrapper {
-  &::-webkit-scrollbar-track {
-    @include themed() {
-      background-color: t("scrollbar-track");
-    }
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @include themed() {
-      background-color: t("base-dark-purple");
-    }
-  }
-}
-
-.list-text,
-.list-text-2,
-.modal-paragraph-header,
-.modal-paragraph-header-2,
-.modal-paragraph-text {
-  @include themed() {
-    color: t("text");
-  }
-}
-
-.modal-exit-button {
-  @include themed() {
-    border-color: t("base-purple");
-    background-color: t("base-light-purple");
-  }
-}
-
-.exit-button-svg {
-  @include themed() {
-    color: t("svgs");
-  }
-}
-
-.toggle-buttons {
-  @include themed() {
-    border-color: t("base-purple");
-    background-color: t("base-light-purple");
-    color: t("base-purple");
-  }
-}
-
-.sound-svg,
-.sound-off-svg,
-.sun-svg,
-.github,
-.linkedin,
-.instagram,
-.mail,
-.moon-svg {
-  @include themed() {
-    stroke: t("svgs");
-    color: t("svgs");
-  }
-}
 
 .loading-screen {
     @include vars.centered;
@@ -1819,6 +1777,59 @@ ul {
     font-size: 1.5rem;
     animation: contactStarsFloat 2.4s ease-in-out infinite;
 }
+
+.screen-button {
+    position: fixed;
+    bottom: 16vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 55;
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    display: none; // hidden until we zoom in
+}
+
+.screen-modal {
+    position: fixed;
+    inset: 0;
+    display: none; // toggled via .visible
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.screen-modal.visible {
+    display: flex;
+}
+
+.screen-modal-inner {
+    position: relative;
+    width: min(94vw, 1400px); // wider
+    height: min(84vh, 800px); // taller instead of aspect-ratio
+    border-radius: 24px;
+    padding: 1.75rem 2rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.screen-modal-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
 
 @keyframes contactStarsFloat {
     0% {
