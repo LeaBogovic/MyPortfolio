@@ -3406,6 +3406,37 @@ if (zoomBackBtn) {
     });
 }
 
+/* -------------------- SCREEN LOGIN -> LOADING -> DESKTOP -------------------- */
+
+const screenLogin = document.getElementById("screenLogin");
+const screenDesktop = document.getElementById("screenDesktop");
+const screenLoading = document.getElementById("screenLoading");
+const screenLoginButton = document.getElementById("screenLoginButton");
+
+if (screenLoginButton && screenLogin && screenDesktop && screenLoading) {
+    screenLoginButton.addEventListener("click", () => {
+        // 1. hide login, show loading
+        screenLogin.style.display = "none";
+        screenDesktop.style.display = "none";
+        screenLoading.style.display = "flex";
+
+        // 2. optional: restart the bar animation each time
+        const fill = screenLoading.querySelector(".screen-loading-bar-fill");
+        if (fill) {
+            fill.style.animation = "none";
+            // force reflow
+            void fill.offsetWidth;
+            fill.style.animation = "screen-loading-bar 1.6s ease-in-out forwards";
+        }
+
+        // 3. after delay, hide loading, show desktop
+        setTimeout(() => {
+            screenLoading.style.display = "none";
+            screenDesktop.style.display = "block";
+        }, 1700); // ms – tweak if you want longer/shorter boot
+    });
+}
+
 
 
 render();

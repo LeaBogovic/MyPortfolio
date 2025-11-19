@@ -103,14 +103,54 @@
     <!-- Fullscreen-ish window that represents the monitor content -->
     <div id="screenModal" class="screen-modal">
         <div class="screen-modal-inner">
+
+            <div id="screenLogin" class="screen-login">
+                <video class="screen-login-bg" autoplay muted loop>
+                    <source src="images/DesktopLogin.mp4" type="video/mp4" />
+                </video>
+
+                <div class="screen-login-card">
+                    <img src="images/DesktopLoginPFP.png" class="screen-login-pfp" />
+
+                    <button id="screenLoginButton" class="screen-login-btn">
+                        Enter
+                    </button>
+                </div>
+            </div>
+
+            <!-- 🔽 ADD THIS NEW BLOCK 🔽 -->
+            <div id="screenLoading" class="screen-loading">
+                <div class="screen-loading-card">
+                    <p class="screen-loading-text">Booting up…</p>
+                    <div class="screen-loading-bar-track">
+                        <div class="screen-loading-bar-fill"></div>
+                    </div>
+
+                    <!-- If you prefer a GIF, uncomment this and remove the bar above
+            <img src="images/DesktopLoading.gif" class="screen-loading-gif" />
+            -->
+                </div>
+            </div>
+            <!-- 🔼 NEW BLOCK ENDS HERE 🔼 -->
+
+            <div id="screenDesktop" class="screen-desktop">
+                <img src="images/DesktopWallpaper.png" class="screen-desktop-bg" />
+
+                <div class="desktop-icon" style="top: 40px; left: 40px;">
+                    <div class="desktop-icon-img"></div>
+                    <p>Project 1</p>
+                </div>
+
+                <div class="desktop-icon" style="top: 140px; left: 40px;">
+                    <div class="desktop-icon-img"></div>
+                    <p>Project 2</p>
+                </div>
+            </div>
+
             <button id="screenModalClose" class="screen-modal-close">✕</button>
-            <h2>Screen Project Space</h2>
-            <p>
-                Placeholder content for now – this will become your little project hub
-                or mini game inside the monitor.
-            </p>
         </div>
     </div>
+
 
 
     <div class="modal work" id="workModal">

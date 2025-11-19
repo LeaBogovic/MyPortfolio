@@ -1543,6 +1543,175 @@ body.about-open {
     }
 }
 
+/* -------------------- LOGIN SCREEN -------------------- */
+.screen-login {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.screen-login-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.75;
+}
+
+.screen-login-card {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 2rem;
+}
+
+.screen-login-pfp {
+    width: 120px;
+    height: 120px;
+    border-radius: 999px;
+    border: 4px solid white;
+    object-fit: cover;
+}
+
+.screen-login-btn {
+    padding: 0.7rem 2.5rem;
+    font-size: 1.3rem;
+    border-radius: 2rem;
+    border: none;
+    background: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+    transition: 0.2s ease;
+}
+
+.screen-login-btn:hover {
+    background: white;
+    transform: translateY(-2px) scale(1.03);
+}
+
+/* -------------------- DESKTOP SCREEN -------------------- */
+.screen-desktop {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+}
+
+.screen-desktop-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Icons */
+.desktop-icon {
+    position: absolute;
+    width: 80px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    font-size: 0.85rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.desktop-icon-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(4px);
+    border: 2px solid rgba(255,255,255,0.4);
+    margin-bottom: 6px;
+}
+/* -------------------- LOADING SCREEN -------------------- */
+.screen-loading {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    display: none; // hidden by default
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.screen-loading-card {
+    min-width: 260px;
+    max-width: 360px;
+    padding: 1.5rem 2rem;
+    border-radius: 20px;
+    background: rgba(20, 12, 40, 0.9);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    color: #fef7ff;
+}
+
+.screen-loading-text {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    opacity: 0.9;
+}
+
+/* progress bar */
+.screen-loading-bar-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    overflow: hidden;
+}
+
+.screen-loading-bar-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ffd6ec, #e4d6ff, #c9b6ff);
+    animation: screen-loading-bar 1.6s ease-in-out forwards;
+}
+
+@keyframes screen-loading-bar {
+    0% {
+        width: 0%;
+    }
+
+    40% {
+        width: 55%;
+    }
+
+    75% {
+        width: 85%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+/* If you use a GIF instead:
+.screen-loading-gif {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin-top: 0.5rem;
+}
+*/
+
 
 .loading-screen {
     @include vars.centered;
