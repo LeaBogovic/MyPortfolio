@@ -93,35 +93,50 @@
     </button>
 
     <div class="modal work" id="workModal">
+        <!-- Selection view -->
         <div class="work-selection" id="workSelection">
             <h1 class="modal-title">~ My Work ~</h1>
             <div class="work-categories">
-                <button class="work-category-btn" data-category="3d">3D</button>
-                <button class="work-category-btn" data-category="animation">Animation</button>
-                <button class="work-category-btn" data-category="game">Game Projects</button>
-                <button class="work-category-btn" data-category="other">Other Projects</button>
+                <button class="work-category-btn" data-category="Assets">
+                    <img src="images/3D.png" alt="Assets Icon" class="work-category-icon" />
+                    Assets
+                </button>
+                <button class="work-category-btn" data-category="animation">
+                    <img src="images/Animation.png" alt="Animation Icon" class="work-category-icon" />
+                    Animation
+                </button>
+                <button class="work-category-btn" data-category="game">
+                    <img src="images/GameProjects.png" alt="Game Projects Icon" class="work-category-icon" />
+                    Game Projects
+                </button>
+                <button class="work-category-btn" data-category="other">
+                    <img src="images/OtherProjects.png" alt="Other Projects Icon" class="work-category-icon" />
+                    Other Projects
+                </button>
             </div>
         </div>
-        <div class="work-category-window" id="work3d" style="display:none">
+        <!-- Category views (hide all by default) -->
+        <div class="work-category-content" id="workAssets" style="display:none">
             <button class="work-back-btn" data-back>&larr; Back</button>
-            <h2>This is the 3D section</h2>
-            <p>Showcase your 3D projects here.</p>
+            <h2 class="modal-title">This is the Assets section</h2>
+            <p>Showcase your Assets projects here.</p>
         </div>
-        <div class="work-category-window" id="workAnimation" style="display:none">
+        <div class="work-category-content" id="workAnimation" style="display:none">
             <button class="work-back-btn" data-back>&larr; Back</button>
-            <h2>This is the Animation section</h2>
+            <h2 class="modal-title">This is the Animation section</h2>
             <p>Showcase your Animation projects here.</p>
         </div>
-        <div class="work-category-window" id="workGame" style="display:none">
+        <div class="work-category-content" id="workGame" style="display:none">
             <button class="work-back-btn" data-back>&larr; Back</button>
-            <h2>This is the Game Projects section</h2>
+            <h2 class="modal-title">This is the Game Projects section</h2>
             <p>Showcase your Game Projects here.</p>
         </div>
-        <div class="work-category-window" id="workOther" style="display:none">
+        <div class="work-category-content" id="workOther" style="display:none">
             <button class="work-back-btn" data-back>&larr; Back</button>
-            <h2>This is the Other Projects section</h2>
+            <h2 class="modal-title">This is the Other Projects section</h2>
             <p>Showcase your miscellaneous projects here.</p>
         </div>
+
         <button class="modal-exit-button">
             <svg width="98"
                  height="96"

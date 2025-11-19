@@ -3227,7 +3227,7 @@ const render = (timestamp) => {
 document.addEventListener("DOMContentLoaded", function () {
     const selection = document.getElementById("workSelection");
     const windows = {
-        "3d": document.getElementById("work3d"),
+        "Assets": document.getElementById("workAssets"),
         "animation": document.getElementById("workAnimation"),
         "game": document.getElementById("workGame"),
         "other": document.getElementById("workOther"),
@@ -3249,6 +3249,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
 
 
 render();
