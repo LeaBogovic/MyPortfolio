@@ -80,6 +80,9 @@
         </svg>
     </button>
 
+    <button id="zoomBackBtn" class="zoom-back-btn">← Back</button>
+
+
     <button class="theme-toggle-button toggle-buttons">
         <svg class="sun-svg" width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M733.333 550H66.666M666.666 666.667H133.333M399.999 100V166.667M133.333 433.333H66.666M210.47 243.804L163.329 196.663M589.516 243.804L636.659 196.663M733.333 433.333H666.666M233.333 433.333C233.333 341.287 307.952 266.667 399.999 266.667C492.046 266.667 566.666 341.287 566.666 433.333" stroke-width="85" stroke-linecap="round" stroke-linejoin="round" />
@@ -636,32 +639,34 @@
 
             </div>
 
-                </div>
-            </div>
         </div>
-
-
-        <button class="modal-exit-button">
-            <svg width="98"
-                 height="96"
-                 viewBox="0 0 98 96"
-                 class="exit-button-svg"
-                 fill="currentColor"
-                 xmlns="http://www.w3.org/2000/svg">
-                <rect width="115.92"
-                      height="17.889"
-                      rx="8.94448"
-                      transform="matrix(-0.696845 0.717222 0.717222 0.696845 83.1709 0)"
-                      fill="currentColor" />
-                <rect width="115.92"
-                      height="17.889"
-                      rx="8.94448"
-                      transform="matrix(0.73406 0.679084 0.679084 -0.73406 0 13.1318)"
-                      fill="currentColor" />
-            </svg>
-        </button>
+    </div>
     </div>
 
+
+    <button class="modal-exit-button">
+        <svg width="98"
+             height="96"
+             viewBox="0 0 98 96"
+             class="exit-button-svg"
+             fill="currentColor"
+             xmlns="http://www.w3.org/2000/svg">
+            <rect width="115.92"
+                  height="17.889"
+                  rx="8.94448"
+                  transform="matrix(-0.696845 0.717222 0.717222 0.696845 83.1709 0)"
+                  fill="currentColor" />
+            <rect width="115.92"
+                  height="17.889"
+                  rx="8.94448"
+                  transform="matrix(0.73406 0.679084 0.679084 -0.73406 0 13.1318)"
+                  fill="currentColor" />
+        </svg>
+    </button>
+    </div>
+
+    <!-- ADD BACK BUTTON HERE -->
+    <button id="zoomBackBtn" style="display:none;position:fixed;top:32px;left:36px;z-index:12">← Back</button>
 
     <div id="experience">
         <canvas id="experience-canvas" class="experience-canvas"></canvas>

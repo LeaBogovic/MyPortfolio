@@ -157,6 +157,22 @@ ul {
     letter-spacing: 0.03em;
 }
 
+.zoom-back-btn {
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 50;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    cursor: pointer;
+    display: none; // hidden until zoomed in
+}
 
 
 // Image Styles
@@ -968,6 +984,8 @@ body.about-open {
         font-size: 1rem;
     }
 }
+
+
 
 .persona-btn {
     border: none;

@@ -178,6 +178,8 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
+
+
 /**  -------------------------- Modal Stuff -------------------------- */
 const modals = {
   work: document.querySelector(".modal.work"),
@@ -2263,6 +2265,9 @@ let coffeePosition;
 let hourHand;
 let minuteHand;
 let chairTop;
+let screenObject = null;
+let originalCameraPos = null;
+let originalCameraLookAt = null;
 const xAxisFans = [];
 const yAxisFans = [];
 let plank1,
@@ -2586,11 +2591,26 @@ loader.load("/models/Room_Portfolio.glb", (glb) => {
         } else if (child.name.includes("Bubble")) {
             child.material = whiteMaterial;
         } else if (child.name.includes("Screen")) {
+            // 1) Apply the video material like before
             child.material = new THREE.MeshBasicMaterial({
                 map: videoTexture,
                 transparent: true,
                 opacity: 0.9,
             });
+
+            // 2) Keep a reference to the screen mesh
+            screenObject = child;
+
+            // 3) Create a hitbox so the existing raycaster can click it
+            const screenHitbox = createStaticHitbox(child);
+
+            if (screenHitbox !== child) {
+                scene.add(screenHitbox);
+            }
+
+            raycasterObjects.push(screenHitbox);
+            hitboxToObjectMap.set(screenHitbox, child);
+
         } else {
             Object.keys(textureMap).forEach((key) => {
                 if (child.name.includes(key)) {
@@ -2764,6 +2784,13 @@ function handleRaycasterInteraction() {
     const hitbox = currentIntersects[0].object;
     const object = hitboxToObjectMap.get(hitbox);
 
+      // Click on the monitor screen → zoom in
+      if (screenObject && object === screenObject) {
+          zoomToMonitor();
+          return; // don’t also open a modal
+      }
+
+
     if (object.name.includes("Button")) {
       buttonSounds.click.play();
     }
@@ -2797,25 +2824,32 @@ function handleRaycasterInteraction() {
       }
     });
 
-    Object.entries(socialLinks).forEach(([key, url]) => {
-      if (object.name.includes(key)) {
-        const newWindow = window.open();
-        newWindow.opener = null;
-        newWindow.location = url;
-        newWindow.target = "_blank";
-        newWindow.rel = "noopener noreferrer";
-      }
-    });
+        Object.entries(socialLinks).forEach(([key, url]) => {
+            if (object.name.includes(key)) {
+                const newWindow = window.open();
+                newWindow.opener = null;
+                newWindow.location = url;
+                newWindow.target = "_blank";
+                newWindow.rel = "noopener noreferrer";
+            }
+        });
 
-    if (object.name.includes("Work_Button")) {
-      showModal(modals.work);
-    } else if (object.name.includes("About_Button")) {
-      showModal(modals.about);
-    } else if (object.name.includes("Contact_Button")) {
-      showModal(modals.contact);
+        // 👉 NEW: Screen click = zoom
+        if (screenObject && object === screenObject) {
+            zoomToMonitor();
+            return;
+        }
+
+        if (object.name.includes("Work_Button")) {
+            showModal(modals.work);
+        } else if (object.name.includes("About_Button")) {
+            showModal(modals.about);
+        } else if (object.name.includes("Contact_Button")) {
+            showModal(modals.contact);
+        }
     }
-  }
 }
+
 
 function playHoverAnimation(objectHitbox, isHovering) {
     let scale = 1.1; // smaller than 1.4, feels more refined
@@ -2946,6 +2980,77 @@ window.addEventListener(
   },
   { passive: false }
 );
+
+function zoomToMonitor() {
+    if (!screenObject) return;
+
+    // Save original position & target once
+    if (!originalCameraPos) {
+        originalCameraPos = camera.position.clone();
+        originalCameraLookAt = controls.target.clone();
+    }
+
+    // 👉 You’ll probably want to tweak these numbers:
+    // Idea: move the camera closer to the screen, but still at a nice angle
+    const targetPos = new THREE.Vector3(
+        screenObject.position.x + 2.0,  // sideways offset
+        screenObject.position.y + 1.0,  // a bit above the center
+        screenObject.position.z + 2.5   // in front of the screen
+    );
+
+    const targetLook = new THREE.Vector3(
+        screenObject.position.x,
+        screenObject.position.y,
+        screenObject.position.z
+    );
+
+    gsap.to(camera.position, {
+        x: targetPos.x,
+        y: targetPos.y,
+        z: targetPos.z,
+        duration: 1.2,
+        ease: "power2.inOut",
+        onUpdate: () => camera.updateProjectionMatrix(),
+    });
+
+    gsap.to(controls.target, {
+        x: targetLook.x,
+        y: targetLook.y,
+        z: targetLook.z,
+        duration: 1.2,
+        ease: "power2.inOut",
+        onUpdate: () => camera.lookAt(controls.target),
+    });
+
+    const backBtn = document.getElementById("zoomBackBtn");
+    if (backBtn) backBtn.style.display = "block";
+}
+
+function zoomBackOut() {
+    if (!originalCameraPos || !originalCameraLookAt) return;
+
+    gsap.to(camera.position, {
+        x: originalCameraPos.x,
+        y: originalCameraPos.y,
+        z: originalCameraPos.z,
+        duration: 1.2,
+        ease: "power2.inOut",
+        onUpdate: () => camera.updateProjectionMatrix(),
+    });
+
+    gsap.to(controls.target, {
+        x: originalCameraLookAt.x,
+        y: originalCameraLookAt.y,
+        z: originalCameraLookAt.z,
+        duration: 1.2,
+        ease: "power2.inOut",
+        onUpdate: () => camera.lookAt(controls.target),
+    });
+
+    const backBtn = document.getElementById("zoomBackBtn");
+    if (backBtn) backBtn.style.display = "none";
+}
+
 
 window.addEventListener("click", handleRaycasterInteraction);
 
@@ -3250,6 +3355,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+const zoomBackBtn = document.getElementById("zoomBackBtn");
+if (zoomBackBtn) {
+    zoomBackBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        zoomBackOut();
+    });
+}
 
 
 
