@@ -92,120 +92,36 @@
         </svg>
     </button>
 
-    <div class="work modal">
-        <div class="modal-wrapper">
+    <div class="modal work" id="workModal">
+        <div class="work-selection" id="workSelection">
             <h1 class="modal-title">~ My Work ~</h1>
-
-            <div class="modal-content">
-                <div class="modal-content-wrapper">
-
-                    <!-- Intro -->
-                    <!-- Intro -->
-                    <section class="work-intro">
-                        <p class="modal-paragraph-text">
-                            A small snapshot of things I’ve worked on so far. I move between
-                            <strong>VR training</strong>, <strong>interaction prototypes</strong>,
-                            and <strong>game / portfolio experiments</strong>, anything that lets me
-                            play with mood, feedback, and how things feel in your hands.
-                        </p>
-
-                        <p class="modal-paragraph-text sm-margin-top sm-font">
-                            a quick tour 🎧
-                        </p>
-                    </section>
-
-                    <div class="modal-divider"></div>
-
-                    <h2 class="modal-paragraph-header work-section-title">
-                        Featured snapshots
-                    </h2>
-
-                    <section class="work-grid">
-                        <!-- CARD 1 -->
-                        <article class="work-card">
-                            <div class="work-card-image">
-                                <img src="/images/vr_dev.webp"
-                                     alt="Unity VR interaction scene"
-                                     class="work-base-image" />
-                            </div>
-                            <div class="work-card-body">
-                                <h3 class="work-card-title">VR Interaction Systems</h3>
-                                <p class="work-card-text">
-                                    A collection of interaction prototypes in Unity, hand tracking,
-                                    sockets, physics toys, food prep systems, breakable objects, and more.
-                                    I like starting with “how should this feel?” and then building
-                                    the system around that.
-                                </p>
-                                <div class="work-card-tags">
-                                    <span class="pill">Unity • C#</span>
-                                    <span class="pill">VR & Hand Tracking</span>
-                                    <span class="pill">Interaction Design</span>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- CARD 2 -->
-                        <article class="work-card">
-                            <div class="work-card-image">
-                                <img src="/images/community.webp"
-                                     alt="Hands of Growth concept art"
-                                     class="work-base-image" />
-                            </div>
-                            <div class="work-card-body">
-                                <h3 class="work-card-title">Hands of Growth (VR – WIP)</h3>
-                                <p class="work-card-text">
-                                    A cozy VR experience about colour, growth, and healing through small
-                                    interactions. You start in a drained space and slowly bring life back
-                                    through touch, plants, and little emotional moments.
-                                </p>
-                                <div class="work-card-tags">
-                                    <span class="pill">Experience Design</span>
-                                    <span class="pill">Emotional Storytelling</span>
-                                    <span class="pill">Shaders & Lighting</span>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- CARD 3 -->
-                        <article class="work-card">
-                            <div class="work-card-image">
-                                <img src="/images/games_fleadh.webp"
-                                     alt="Hackathon / game jam vibes"
-                                     class="work-base-image" />
-                            </div>
-                            <div class="work-card-body">
-                                <h3 class="work-card-title">Hackathons & Game Jams</h3>
-                                <p class="work-card-text">
-                                    From NASA Space Apps to Games Fleadh, I love fast-paced environments
-                                    where you pick a direction, build, break, fix, and polish under
-                                    pressure, and somehow still find time to add particles.
-                                </p>
-                                <div class="work-card-tags">
-                                    <span class="pill">Teamwork</span>
-                                    <span class="pill">Rapid Prototyping</span>
-                                    <span class="pill">Scope & Polish</span>
-                                </div>
-                            </div>
-                        </article>
-                    </section>
-
-                    <div class="modal-divider"></div>
-
-                    <section class="work-footer">
-                        <p class="modal-paragraph-text sm-font">
-                            I’m currently organising more of my projects, gifs, and videos. If you’d
-                            like to see something specific (VR training, hand tracking, game jams, or
-                            this room itself), feel free to reach out on the contact page 💌
-                        </p>
-                    </section>
-
-
-                </div>
+            <div class="work-categories">
+                <button class="work-category-btn" data-category="3d">3D</button>
+                <button class="work-category-btn" data-category="animation">Animation</button>
+                <button class="work-category-btn" data-category="game">Game Projects</button>
+                <button class="work-category-btn" data-category="other">Other Projects</button>
             </div>
         </div>
-
-        <div class="about-cursor"></div>
-
+        <div class="work-category-window" id="work3d" style="display:none">
+            <button class="work-back-btn" data-back>&larr; Back</button>
+            <h2>This is the 3D section</h2>
+            <p>Showcase your 3D projects here.</p>
+        </div>
+        <div class="work-category-window" id="workAnimation" style="display:none">
+            <button class="work-back-btn" data-back>&larr; Back</button>
+            <h2>This is the Animation section</h2>
+            <p>Showcase your Animation projects here.</p>
+        </div>
+        <div class="work-category-window" id="workGame" style="display:none">
+            <button class="work-back-btn" data-back>&larr; Back</button>
+            <h2>This is the Game Projects section</h2>
+            <p>Showcase your Game Projects here.</p>
+        </div>
+        <div class="work-category-window" id="workOther" style="display:none">
+            <button class="work-back-btn" data-back>&larr; Back</button>
+            <h2>This is the Other Projects section</h2>
+            <p>Showcase your miscellaneous projects here.</p>
+        </div>
         <button class="modal-exit-button">
             <svg width="98"
                  height="96"

@@ -3224,5 +3224,32 @@ const render = (timestamp) => {
   window.requestAnimationFrame(render);
 };
 
+document.addEventListener("DOMContentLoaded", function () {
+    const selection = document.getElementById("workSelection");
+    const windows = {
+        "3d": document.getElementById("work3d"),
+        "animation": document.getElementById("workAnimation"),
+        "game": document.getElementById("workGame"),
+        "other": document.getElementById("workOther"),
+    };
+
+    document.querySelectorAll('.work-category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            selection.style.display = "none";
+            Object.values(windows).forEach(win => win.style.display = "none");
+            const cat = btn.getAttribute('data-category');
+            if (windows[cat]) windows[cat].style.display = "block";
+        });
+    });
+
+    document.querySelectorAll('.work-back-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            Object.values(windows).forEach(win => win.style.display = "none");
+            selection.style.display = "block";
+        });
+    });
+});
+
+
 render();
 //testing deployment
