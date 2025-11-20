@@ -3420,12 +3420,11 @@ if (screenLoginButton && screenLogin && screenDesktop && screenLoading) {
         screenDesktop.style.display = "none";
         screenLoading.style.display = "flex";
 
-        // 2. optional: restart the bar animation each time
+        // 2. restart bar animation
         const fill = screenLoading.querySelector(".screen-loading-bar-fill");
         if (fill) {
             fill.style.animation = "none";
-            // force reflow
-            void fill.offsetWidth;
+            void fill.offsetWidth; // force reflow
             fill.style.animation = "screen-loading-bar 1.6s ease-in-out forwards";
         }
 
@@ -3433,9 +3432,158 @@ if (screenLoginButton && screenLogin && screenDesktop && screenLoading) {
         setTimeout(() => {
             screenLoading.style.display = "none";
             screenDesktop.style.display = "block";
-        }, 1700); // ms – tweak if you want longer/shorter boot
+        }, 1700);
     });
 }
+
+/* -------------------- DESKTOP VIDEO WINDOW -------------------- */
+
+const desktopIcons = document.querySelectorAll(".desktop-icon");
+const videoWindow = document.getElementById("desktopVideoWindow");
+const videoTitleEl = videoWindow?.querySelector(".desktop-window-title");
+const videoPlayer = document.getElementById("desktopVideoPlayer");
+const videoSource = videoPlayer?.querySelector("source");
+const videoCloseBtn = videoWindow?.querySelector(".desktop-window-close");
+const videoHeader = videoWindow?.querySelector(".desktop-window-header");
+
+let currentlyOpenIconImg = null;
+
+if (
+    desktopIcons.length &&
+    videoWindow &&
+    videoPlayer &&
+    videoSource &&
+    videoTitleEl &&
+    videoCloseBtn &&
+    screenDesktop &&
+    videoHeader
+) {
+    /* ---------- OPEN WINDOW WHEN CLICKING ICON ---------- */
+    const ELEVATOR_PITCH_PASSWORD = "cucumber"; // ← change to whatever you want
+
+    desktopIcons.forEach((icon) => {
+        icon.addEventListener("click", () => {
+            const videoSrc = icon.getAttribute("data-video");
+            if (!videoSrc) {
+                console.warn("No data-video set for this desktop icon");
+                return;
+            }
+
+            // 🔒 check if this icon is locked
+            const isLocked = icon.dataset.locked === "true";
+            if (isLocked) {
+                const attempt = window.prompt("Enter password to open this video:");
+                if (attempt !== ELEVATOR_PITCH_PASSWORD) {
+                    // wrong or cancelled → do nothing
+                    return;
+                }
+            }
+
+            const title =
+                icon.getAttribute("data-title") ||
+                icon.querySelector("p")?.textContent ||
+                "Project video";
+
+            // Set video + title
+            videoTitleEl.textContent = title;
+            videoSource.src = videoSrc;
+            videoPlayer.load();
+
+            if (!videoWindow.style.left) {
+                videoWindow.style.left = "140px";
+                videoWindow.style.top = "90px";
+            }
+
+            videoWindow.style.display = "block";
+
+            // Switch icon to OPEN
+            const iconImg = icon.querySelector(".desktop-icon-img");
+            if (iconImg) {
+                if (currentlyOpenIconImg && currentlyOpenIconImg !== iconImg) {
+                    currentlyOpenIconImg.style.backgroundImage =
+                        "url('/images/ClosedPurple.png')";
+                }
+                iconImg.style.backgroundImage = "url('/images/OpenPurple.png')";
+                currentlyOpenIconImg = iconImg;
+            }
+
+            videoPlayer.play().catch(() => { });
+        });
+    });
+
+
+    /* ---------- CLOSE WINDOW (X + monitor close) ---------- */
+    function closeVideoWindow() {
+        videoPlayer.pause();
+        videoPlayer.currentTime = 0;
+        videoWindow.style.display = "none";
+
+        // Turn folder back to CLOSED
+        if (currentlyOpenIconImg) {
+            currentlyOpenIconImg.style.backgroundImage =
+                "url('/images/ClosedPurple.png')";
+            currentlyOpenIconImg = null;
+        }
+    }
+
+    videoCloseBtn.addEventListener("click", closeVideoWindow);
+
+    const screenModalClose = document.getElementById("screenModalClose");
+    if (screenModalClose) {
+        screenModalClose.addEventListener("click", closeVideoWindow);
+    }
+
+    /* ---------- DRAGGING LOGIC (WINDOWS STYLE) ---------- */
+    let isDragging = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    videoHeader.addEventListener("mousedown", (e) => {
+        isDragging = true;
+
+        const rect = videoWindow.getBoundingClientRect();
+        const desktopRect = screenDesktop.getBoundingClientRect();
+
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+
+        document.body.style.userSelect = "none";
+    });
+
+    window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+
+        const desktopRect = screenDesktop.getBoundingClientRect();
+
+        let newLeft = e.clientX - dragOffsetX;
+        let newTop = e.clientY - dragOffsetY;
+
+        const maxLeft = desktopRect.right - videoWindow.offsetWidth;
+        const maxTop = desktopRect.bottom - videoWindow.offsetHeight;
+        const minLeft = desktopRect.left;
+        const minTop = desktopRect.top;
+
+        if (newLeft < minLeft) newLeft = minLeft;
+        if (newTop < minTop) newTop = minTop;
+        if (newLeft > maxLeft) newLeft = maxLeft;
+        if (newTop > maxTop) newTop = maxTop;
+
+        const relativeLeft = newLeft - desktopRect.left;
+        const relativeTop = newTop - desktopRect.top;
+
+        videoWindow.style.left = `${relativeLeft}px`;
+        videoWindow.style.top = `${relativeTop}px`;
+    });
+
+    window.addEventListener("mouseup", () => {
+        if (!isDragging) return;
+        isDragging = false;
+        document.body.style.userSelect = "";
+    });
+}
+
+
+
 
 
 

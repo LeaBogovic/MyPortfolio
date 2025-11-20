@@ -1630,14 +1630,15 @@ body.about-open {
 }
 
 .desktop-icon-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.25);
-    backdrop-filter: blur(4px);
-    border: 2px solid rgba(255,255,255,0.4);
-    margin-bottom: 6px;
+    width: 64px;
+    height: 64px;
+    background-size: contain !important; /* <-- FIXES zooming */
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    image-rendering: smooth;
+    border-radius: 12px; /* optional for softer vibes */
 }
+
 /* -------------------- LOADING SCREEN -------------------- */
 .screen-loading {
     position: absolute;
@@ -1711,6 +1712,78 @@ body.about-open {
   margin-top: 0.5rem;
 }
 */
+/* -------------------- Desktop video window (soft / cozy) -------------------- */
+
+.desktop-window {
+    position: absolute;
+    top: 80px;
+    left: 120px;
+    width: 60%;
+    max-width: 720px;
+    background: rgba(255, 245, 252, 0.92); /* soft off-white pink */
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.4);
+    z-index: 999;
+    overflow: hidden;
+    color: #3b2340;
+    backdrop-filter: blur(12px);
+}
+
+.desktop-window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 13px;
+    background: linear-gradient( 90deg, rgba(252, 232, 255, 0.95), rgba(226, 234, 255, 0.95) );
+    color: #49325a;
+    user-select: none;
+    cursor: move;
+}
+
+.desktop-window-title {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.desktop-window-close {
+    border: none;
+    background: rgba(255, 228, 236, 0.95);
+    color: #7a2f3e;
+    font-size: 13px;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.desktop-window-close:hover {
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.22);
+    background: #ffd1dd;
+    color: #5a1224;
+}
+
+.desktop-window-body {
+    padding: 10px 10px 12px;
+    background: radial-gradient( circle at top left, rgba(255, 240, 251, 0.9), rgba(238, 241, 255, 0.95) );
+}
+
+.desktop-video-player {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    background: #0b0b16;
+}
+
+
 
 
 .loading-screen {

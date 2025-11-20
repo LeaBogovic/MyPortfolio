@@ -136,15 +136,46 @@
             <div id="screenDesktop" class="screen-desktop">
                 <img src="images/DesktopWallpaper.png" class="screen-desktop-bg" />
 
-                <div class="desktop-icon" style="top: 40px; left: 40px;">
-                    <div class="desktop-icon-img"></div>
-                    <p>Project 1</p>
+                <div class="desktop-icon"
+                     style="top: 40px; left: 40px;"
+                     data-video="/videos/BLT.mp4"
+                     data-title="BLT VR">
+                    <div class="desktop-icon-img"
+                         style="background-image: url('/images/ClosedPurple.png')"></div>
+                    <p>BLT VR</p>
                 </div>
 
-                <div class="desktop-icon" style="top: 140px; left: 40px;">
-                    <div class="desktop-icon-img"></div>
-                    <p>Project 2</p>
+                <div class="desktop-icon"
+                     style="top: 140px; left: 40px;"
+                     data-video="/videos/ElevatorPitch.mov"
+                     data-title="Elevator Pitch Video"
+                     data-locked="true">
+                    <div class="desktop-icon-img"
+                         style="background-image: url('/images/ClosedPurple.png')"></div>
+                    <p>Elevator Pitch</p>
                 </div>
+
+
+
+
+                <div id="desktopVideoWindow" class="desktop-window" style="display:none;">
+                    <div class="desktop-window-header">
+                        <span class="desktop-window-title">Project video</span>
+                        <button class="desktop-window-close">✕</button>
+                    </div>
+
+                    <div class="desktop-window-body">
+                        <video id="desktopVideoPlayer"
+                               class="desktop-video-player"
+                               controls
+                               preload="metadata">
+                            <source src="" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+
+
             </div>
 
             <button id="screenModalClose" class="screen-modal-close">✕</button>
