@@ -3607,6 +3607,7 @@ if (
 
     /* ---------- DRAGGING LOGIC (for all desktop windows) ---------- */
 
+    // ---- Dragging logic for ALL desktop windows (mouse + touch) ----
     let isDragging = false;
     let dragOffsetX = 0;
     let dragOffsetY = 0;
@@ -3615,7 +3616,10 @@ if (
     function attachDrag(windowEl, headerEl) {
         if (!windowEl || !headerEl) return;
 
-        headerEl.addEventListener("mousedown", (e) => {
+        headerEl.addEventListener("pointerdown", (e) => {
+            // only left-click / primary touch
+            if (e.button !== 0 && e.button !== undefined) return;
+
             isDragging = true;
             activeDragWindow = windowEl;
 
@@ -3625,47 +3629,62 @@ if (
             dragOffsetX = e.clientX - rect.left;
             dragOffsetY = e.clientY - rect.top;
 
+            headerEl.setPointerCapture(e.pointerId);
             document.body.style.userSelect = "none";
+        });
+
+        headerEl.addEventListener("pointermove", (e) => {
+            if (!isDragging || activeDragWindow !== windowEl) return;
+
+            const desktopRect = screenDesktop.getBoundingClientRect();
+
+            let newLeft = e.clientX - dragOffsetX;
+            let newTop = e.clientY - dragOffsetY;
+
+            const maxLeft = desktopRect.right - activeDragWindow.offsetWidth;
+            const maxTop = desktopRect.bottom - activeDragWindow.offsetHeight;
+            const minLeft = desktopRect.left;
+            const minTop = desktopRect.top;
+
+            if (newLeft < minLeft) newLeft = minLeft;
+            if (newTop < minTop) newTop = minTop;
+            if (newLeft > maxLeft) newLeft = maxLeft;
+            if (newTop > maxTop) newTop = maxTop;
+
+            const relativeLeft = newLeft - desktopRect.left;
+            const relativeTop = newTop - desktopRect.top;
+
+            activeDragWindow.style.left = `${relativeLeft}px`;
+            activeDragWindow.style.top = `${relativeTop}px`;
+        });
+
+        headerEl.addEventListener("pointerup", (e) => {
+            if (!isDragging || activeDragWindow !== windowEl) return;
+            isDragging = false;
+            activeDragWindow = null;
+            document.body.style.userSelect = "";
+            headerEl.releasePointerCapture(e.pointerId);
+        });
+
+        headerEl.addEventListener("pointercancel", () => {
+            isDragging = false;
+            activeDragWindow = null;
+            document.body.style.userSelect = "";
         });
     }
 
-    // attach to all windows that should be draggable
+    // attach to all windows you want draggable:
     attachDrag(videoWindow, videoHeader);
+
+    // if you have these already:
+    //   const welcomeWindow = document.getElementById("desktopWelcomePrompt");
+    //   const welcomeHeader = welcomeWindow?.querySelector(".desktop-window-header");
+    //   const textWindow = document.getElementById("desktopTextWindow");
+    //   const textHeader = textWindow?.querySelector(".desktop-window-header");
+
     attachDrag(welcomeWindow, welcomeHeader);
     attachDrag(textWindow, textHeader);
-
-    window.addEventListener("mousemove", (e) => {
-        if (!isDragging || !activeDragWindow) return;
-
-        const desktopRect = screenDesktop.getBoundingClientRect();
-
-        let newLeft = e.clientX - dragOffsetX;
-        let newTop = e.clientY - dragOffsetY;
-
-        const maxLeft = desktopRect.right - activeDragWindow.offsetWidth;
-        const maxTop = desktopRect.bottom - activeDragWindow.offsetHeight;
-        const minLeft = desktopRect.left;
-        const minTop = desktopRect.top;
-
-        if (newLeft < minLeft) newLeft = minLeft;
-        if (newTop < minTop) newTop = minTop;
-        if (newLeft > maxLeft) newLeft = maxLeft;
-        if (newTop > maxTop) newTop = maxTop;
-
-        const relativeLeft = newLeft - desktopRect.left;
-        const relativeTop = newTop - desktopRect.top;
-
-        activeDragWindow.style.left = `${relativeLeft}px`;
-        activeDragWindow.style.top = `${relativeTop}px`;
-    });
-
-    window.addEventListener("mouseup", () => {
-        if (!isDragging) return;
-        isDragging = false;
-        activeDragWindow = null;
-        document.body.style.userSelect = "";
-    });
-}
+    }
 
 
 
@@ -3674,4 +3693,3 @@ if (
 
 
 render();
-//testing deployment
