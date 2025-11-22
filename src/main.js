@@ -3502,70 +3502,53 @@ if (
     const ELEVATOR_PITCH_PASSWORD = "cucumber"; // ← change to whatever you want
 
     desktopIcons.forEach((icon) => {
-        icon.addEventListener("click", () => {
-            const isLocked = icon.dataset.locked === "true";
-            const noteType = icon.dataset.note || null;
+        const handleActivate = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
             const videoSrc = icon.getAttribute("data-video");
-
-            // 🔒 password gate for Elevator Pitch (unchanged logic)
-            if (videoSrc && isLocked) {
-                const attempt = window.prompt("Enter password to open this video:");
-                if (attempt !== ELEVATOR_PITCH_PASSWORD) {
-                    return;
-                }
-            }
-
-            // handle password.txt note
-            if (noteType === "password" && textWindow) {
-                textWindow.style.display = "block";
-
-                // switch folder icon to open
-                const iconImg = icon.querySelector(".desktop-icon-img");
-                if (iconImg) {
-                    if (currentlyOpenIconImg && currentlyOpenIconImg !== iconImg) {
-                        currentlyOpenIconImg.style.backgroundImage =
-                            "url('/images/ClosedPurple.png')";
-                    }
-                    iconImg.style.backgroundImage = "url('/images/OpenPurple.png')";
-                    currentlyOpenIconImg = iconImg;
-                }
-                return;
-            }
-
-            // handle video icons as before
-            if (!videoSrc) {
-                return; // not a video or note, nothing to do
-            }
-
             const title =
                 icon.getAttribute("data-title") ||
                 icon.querySelector("p")?.textContent ||
                 "Project video";
 
-            // Set video + title
+            if (!videoSrc) {
+                console.warn("No data-video set for this desktop icon");
+                return;
+            }
+
+            // ⬇️ KEEP all your existing logic from here down ⬇️
+            // (title, videoSource.src, videoWindow.style.display, play(), etc.)
+
             videoTitleEl.textContent = title;
             videoSource.src = videoSrc;
             videoPlayer.load();
 
-            if (!videoWindow.style.left) {
-                videoWindow.style.left = "140px";
-                videoWindow.style.top = "90px";
-            }
-
             videoWindow.style.display = "block";
-
-            const iconImg = icon.querySelector(".desktop-icon-img");
-            if (iconImg) {
-                if (currentlyOpenIconImg && currentlyOpenIconImg !== iconImg) {
-                    currentlyOpenIconImg.style.backgroundImage =
-                        "url('/images/ClosedPurple.png')";
-                }
-                iconImg.style.backgroundImage = "url('/images/OpenPurple.png')";
-                currentlyOpenIconImg = iconImg;
+            if (!videoWindow.style.left) {
+                videoWindow.style.left = "120px";
+                videoWindow.style.top = "80px";
             }
 
-            videoPlayer.play().catch(() => { });
-        });
+            videoPlayer.play().catch(() => {
+                // browser may block autoplay, user can press play
+            });
+            // ⬆️ KEEP your custom bits here if you’ve added more ⬆️
+        };
+
+        // 🖱 PC / desktop
+        icon.addEventListener("click", handleActivate);
+
+        // 📱 Phone / touch – added
+        icon.addEventListener(
+            "touchend",
+            (e) => {
+                handleActivate(e);
+            },
+            { passive: false }
+        );
     });
 
 
