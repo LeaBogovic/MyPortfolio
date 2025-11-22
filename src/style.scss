@@ -1730,6 +1730,51 @@ body.about-open {
     backdrop-filter: blur(12px);
 }
 
+/* Welcome helper window position */
+.desktop-window--welcome {
+    position: absolute;
+    top: 18%; // we’ll keep this as a starting point
+    left: 50%; // temporary, we’ll override via JS
+    max-width: 420px;
+    transform: none; // 🔥 make sure there is NO translateX here
+}
+
+
+/* Welcome text + button */
+.desktop-welcome-text {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.desktop-window-primary-btn {
+    margin-top: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    background: linear-gradient( 90deg, rgba(252, 232, 255, 0.95), rgba(226, 234, 255, 0.95) );
+    color: #49325a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.desktop-window-primary-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.24);
+}
+
+/* password.txt contents */
+.desktop-text-content {
+    margin: 0;
+    font-family: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+
 .desktop-window-header {
     display: flex;
     justify-content: space-between;

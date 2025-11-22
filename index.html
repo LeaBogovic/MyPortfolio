@@ -155,7 +155,51 @@
                     <p>Elevator Pitch</p>
                 </div>
 
+                <div class="desktop-icon"
+                     style="top: 240px; left: 40px;"
+                     data-note="password">
+                    <div class="desktop-icon-img"
+                         style="background-image: url('/images/ClosedPurple.png')"></div>
+                    <p>password.txt</p>
+                </div>
 
+
+                <!-- Welcome helper window -->
+                <div id="desktopWelcomePrompt"
+                     class="desktop-window desktop-window--welcome"
+                     style="display:none;">
+                    <div class="desktop-window-header">
+                        <span class="desktop-window-title">Welcome</span>
+                        <button class="desktop-window-close" id="desktopWelcomeClose">✕</button>
+                    </div>
+                    <div class="desktop-window-body">
+                        <p class="desktop-welcome-text">
+                            Hi, I’m Lea 👋
+                            This little desktop is my portfolio corner.
+                        </p>
+                        <p class="desktop-welcome-text">
+                            ➤ Click the <strong>folders</strong> to explore my VR projects and videos.<br />
+                            ➤ The Elevator Pitch video is <strong>password protected</strong>.<br />
+                            ➤ You can find the password in <strong>password.txt</strong> on the desktop.
+                        </p>
+                        <button class="desktop-window-primary-btn" id="desktopWelcomeOk">
+                            Got it ✨
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Text window for password.txt -->
+                <div id="desktopTextWindow" class="desktop-window" style="display:none;">
+                    <div class="desktop-window-header">
+                        <span class="desktop-window-title">password.txt</span>
+                        <button class="desktop-window-close" id="desktopTextClose">✕</button>
+                    </div>
+                    <div class="desktop-window-body">
+                        <pre class="desktop-text-content">
+password is cucumber 🥒
+    </pre>
+                    </div>
+                </div>
 
 
                 <div id="desktopVideoWindow" class="desktop-window" style="display:none;">

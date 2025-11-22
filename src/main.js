@@ -3413,6 +3413,10 @@ const screenDesktop = document.getElementById("screenDesktop");
 const screenLoading = document.getElementById("screenLoading");
 const screenLoginButton = document.getElementById("screenLoginButton");
 
+const desktopWelcomePrompt = document.getElementById("desktopWelcomePrompt");
+const desktopWelcomeOk = document.getElementById("desktopWelcomeOk");
+const desktopWelcomeClose = document.getElementById("desktopWelcomeClose");
+
 if (screenLoginButton && screenLogin && screenDesktop && screenLoading) {
     screenLoginButton.addEventListener("click", () => {
         // 1. hide login, show loading
@@ -3432,8 +3436,38 @@ if (screenLoginButton && screenLogin && screenDesktop && screenLoading) {
         setTimeout(() => {
             screenLoading.style.display = "none";
             screenDesktop.style.display = "block";
+
+            // show & center cute helper prompt
+            if (desktopWelcomePrompt && screenDesktop) {
+                desktopWelcomePrompt.style.display = "block";
+
+                // center inside the desktop once (no transform!)
+                const desktopRect = screenDesktop.getBoundingClientRect();
+                const winRect = desktopWelcomePrompt.getBoundingClientRect();
+
+                const left =
+                    (desktopRect.width - winRect.width) / 2;   // center horizontally
+                const top = desktopRect.height * 0.18;        // about 18% from top
+
+                desktopWelcomePrompt.style.left = `${left}px`;
+                desktopWelcomePrompt.style.top = `${top}px`;
+            }
         }, 1700);
+
+
     });
+}
+if (desktopWelcomePrompt && (desktopWelcomeOk || desktopWelcomeClose)) {
+    const hideWelcome = () => {
+        desktopWelcomePrompt.style.display = "none";
+    };
+
+    if (desktopWelcomeOk) {
+        desktopWelcomeOk.addEventListener("click", hideWelcome);
+    }
+    if (desktopWelcomeClose) {
+        desktopWelcomeClose.addEventListener("click", hideWelcome);
+    }
 }
 
 /* -------------------- DESKTOP VIDEO WINDOW -------------------- */
@@ -3445,6 +3479,12 @@ const videoPlayer = document.getElementById("desktopVideoPlayer");
 const videoSource = videoPlayer?.querySelector("source");
 const videoCloseBtn = videoWindow?.querySelector(".desktop-window-close");
 const videoHeader = videoWindow?.querySelector(".desktop-window-header");
+const textWindow = document.getElementById("desktopTextWindow");
+const textCloseBtn = document.getElementById("desktopTextClose");
+
+const welcomeWindow = document.getElementById("desktopWelcomePrompt");
+const welcomeHeader = welcomeWindow?.querySelector(".desktop-window-header");
+const textHeader = textWindow?.querySelector(".desktop-window-header");
 
 let currentlyOpenIconImg = null;
 
@@ -3463,20 +3503,38 @@ if (
 
     desktopIcons.forEach((icon) => {
         icon.addEventListener("click", () => {
+            const isLocked = icon.dataset.locked === "true";
+            const noteType = icon.dataset.note || null;
             const videoSrc = icon.getAttribute("data-video");
-            if (!videoSrc) {
-                console.warn("No data-video set for this desktop icon");
+
+            // 🔒 password gate for Elevator Pitch (unchanged logic)
+            if (videoSrc && isLocked) {
+                const attempt = window.prompt("Enter password to open this video:");
+                if (attempt !== ELEVATOR_PITCH_PASSWORD) {
+                    return;
+                }
+            }
+
+            // handle password.txt note
+            if (noteType === "password" && textWindow) {
+                textWindow.style.display = "block";
+
+                // switch folder icon to open
+                const iconImg = icon.querySelector(".desktop-icon-img");
+                if (iconImg) {
+                    if (currentlyOpenIconImg && currentlyOpenIconImg !== iconImg) {
+                        currentlyOpenIconImg.style.backgroundImage =
+                            "url('/images/ClosedPurple.png')";
+                    }
+                    iconImg.style.backgroundImage = "url('/images/OpenPurple.png')";
+                    currentlyOpenIconImg = iconImg;
+                }
                 return;
             }
 
-            // 🔒 check if this icon is locked
-            const isLocked = icon.dataset.locked === "true";
-            if (isLocked) {
-                const attempt = window.prompt("Enter password to open this video:");
-                if (attempt !== ELEVATOR_PITCH_PASSWORD) {
-                    // wrong or cancelled → do nothing
-                    return;
-                }
+            // handle video icons as before
+            if (!videoSrc) {
+                return; // not a video or note, nothing to do
             }
 
             const title =
@@ -3496,7 +3554,6 @@ if (
 
             videoWindow.style.display = "block";
 
-            // Switch icon to OPEN
             const iconImg = icon.querySelector(".desktop-icon-img");
             if (iconImg) {
                 if (currentlyOpenIconImg && currentlyOpenIconImg !== iconImg) {
@@ -3512,13 +3569,9 @@ if (
     });
 
 
-    /* ---------- CLOSE WINDOW (X + monitor close) ---------- */
-    function closeVideoWindow() {
-        videoPlayer.pause();
-        videoPlayer.currentTime = 0;
-        videoWindow.style.display = "none";
 
-        // Turn folder back to CLOSED
+    /* ---------- CLOSE WINDOW (X + monitor close) ---------- */
+    function resetActiveIcon() {
         if (currentlyOpenIconImg) {
             currentlyOpenIconImg.style.backgroundImage =
                 "url('/images/ClosedPurple.png')";
@@ -3526,40 +3579,71 @@ if (
         }
     }
 
+    function closeVideoWindow() {
+        videoPlayer.pause();
+        videoPlayer.currentTime = 0;
+        videoWindow.style.display = "none";
+        resetActiveIcon();
+    }
+
     videoCloseBtn.addEventListener("click", closeVideoWindow);
 
     const screenModalClose = document.getElementById("screenModalClose");
     if (screenModalClose) {
-        screenModalClose.addEventListener("click", closeVideoWindow);
+        screenModalClose.addEventListener("click", () => {
+            closeVideoWindow();
+            if (textWindow) textWindow.style.display = "none";
+        });
     }
 
-    /* ---------- DRAGGING LOGIC (WINDOWS STYLE) ---------- */
+    // close password.txt window
+    if (textWindow && textCloseBtn) {
+        textCloseBtn.addEventListener("click", () => {
+            textWindow.style.display = "none";
+            resetActiveIcon();
+        });
+    }
+
+
+    /* ---------- DRAGGING LOGIC (for all desktop windows) ---------- */
+
     let isDragging = false;
     let dragOffsetX = 0;
     let dragOffsetY = 0;
+    let activeDragWindow = null;
 
-    videoHeader.addEventListener("mousedown", (e) => {
-        isDragging = true;
+    function attachDrag(windowEl, headerEl) {
+        if (!windowEl || !headerEl) return;
 
-        const rect = videoWindow.getBoundingClientRect();
-        const desktopRect = screenDesktop.getBoundingClientRect();
+        headerEl.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            activeDragWindow = windowEl;
 
-        dragOffsetX = e.clientX - rect.left;
-        dragOffsetY = e.clientY - rect.top;
+            const rect = windowEl.getBoundingClientRect();
+            const desktopRect = screenDesktop.getBoundingClientRect();
 
-        document.body.style.userSelect = "none";
-    });
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+
+            document.body.style.userSelect = "none";
+        });
+    }
+
+    // attach to all windows that should be draggable
+    attachDrag(videoWindow, videoHeader);
+    attachDrag(welcomeWindow, welcomeHeader);
+    attachDrag(textWindow, textHeader);
 
     window.addEventListener("mousemove", (e) => {
-        if (!isDragging) return;
+        if (!isDragging || !activeDragWindow) return;
 
         const desktopRect = screenDesktop.getBoundingClientRect();
 
         let newLeft = e.clientX - dragOffsetX;
         let newTop = e.clientY - dragOffsetY;
 
-        const maxLeft = desktopRect.right - videoWindow.offsetWidth;
-        const maxTop = desktopRect.bottom - videoWindow.offsetHeight;
+        const maxLeft = desktopRect.right - activeDragWindow.offsetWidth;
+        const maxTop = desktopRect.bottom - activeDragWindow.offsetHeight;
         const minLeft = desktopRect.left;
         const minTop = desktopRect.top;
 
@@ -3571,16 +3655,18 @@ if (
         const relativeLeft = newLeft - desktopRect.left;
         const relativeTop = newTop - desktopRect.top;
 
-        videoWindow.style.left = `${relativeLeft}px`;
-        videoWindow.style.top = `${relativeTop}px`;
+        activeDragWindow.style.left = `${relativeLeft}px`;
+        activeDragWindow.style.top = `${relativeTop}px`;
     });
 
     window.addEventListener("mouseup", () => {
         if (!isDragging) return;
         isDragging = false;
+        activeDragWindow = null;
         document.body.style.userSelect = "";
     });
 }
+
 
 
 
