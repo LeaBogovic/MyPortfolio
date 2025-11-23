@@ -254,9 +254,50 @@ password is cucumber 🥒
         <!-- Category views (hide all by default) -->
         <div class="work-category-content" id="workAssets" style="display:none">
             <button class="work-back-btn" data-back>&larr; Back</button>
-            <h2 class="modal-title">This is the Assets section</h2>
-            <p>il pout my asset work here.</p>
+            <h2 class="modal-title">3D Assets</h2>
+            <p class="modal-subtitle">A few things I’ve been building in Blender.</p>
+
+            <div class="assets-grid">
+                <!-- CARD 1 -->
+                <div class="asset-card"
+                     data-title="Cozy VR Room"
+                     data-img="images/portfolioroom.webp"
+                     data-video=""
+                     data-desc="Stylised low-poly room prototype used as a base for this portfolio."
+                     data-github="https://github.com/LeaBogovic/YOUR-ROOM-REPO">
+                    <img src="images/portfolip"
+                         alt="Cozy VR Room render"
+                         class="asset-thumb" />
+                    <div class="asset-card-body">
+                        <h3 class="asset-title">Cozy VR Room</h3>
+                        <p class="asset-desc">
+                            Low-poly room with warm lighting, plants, and a chunky CRT monitor.
+                        </p>
+                        <button class="asset-open-btn">View details</button>
+                    </div>
+                </div>
+
+                <!-- CARD 2 -->
+                <div class="asset-card"
+                     data-title="Lantern Prop"
+                     data-img="images/LanternThumbnail.png"
+                     data-video=""
+                     data-desc="Hand-painted lantern prop created for a fantasy exploration scene."
+                     data-github="https://github.com/LeaBogovic/YOUR-LANTERN-REPO">
+                    <img src="images/LanternThumbnail.png"
+                         alt="Lantern render"
+                         class="asset-thumb" />
+                    <div class="asset-card-body">
+                        <h3 class="asset-title">Lantern Prop</h3>
+                        <p class="asset-desc">
+                            Game-ready lantern with simple topology and baked lighting.
+                        </p>
+                        <button class="asset-open-btn">View details</button>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="work-category-content" id="workAnimation" style="display:none">
             <button class="work-back-btn" data-back>&larr; Back</button>
             <h2 class="modal-title">This is the Animation section</h2>

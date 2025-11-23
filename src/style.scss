@@ -60,6 +60,17 @@ button {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Center all modal-style windows nicer */
+.desktop-window,
+.modal-window,
+#assetViewer {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+
 // Experience
 #experience {
   position: fixed;
@@ -671,6 +682,28 @@ body.about-open {
     opacity: 0.96;
     margin-bottom: 0.8em;
 }
+
+#workAssets {
+    max-height: 70vh; // keeps window from overflowing
+    overflow-y: auto; // enables scrolling
+    padding-right: 10px; // prevents scrollbar from overlapping content
+    scrollbar-width: thin; // (Firefox) nicer scrollbar
+}
+
+
+.work-category-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.work-category-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 170, 255, 0.3);
+    border-radius: 10px;
+}
+
+.work-category-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 
 
 .work-back-btn {
@@ -1715,9 +1748,9 @@ body.about-open {
 /* -------------------- Desktop video window (soft / cozy) -------------------- */
 
 .desktop-window {
-    position: absolute;
-    top: 80px;
-    left: 120px;
+    position: fixed;
+    top: 50px;
+    left: 50px;
     width: 60%;
     max-width: 720px;
     background: rgba(255, 245, 252, 0.92); /* soft off-white pink */
@@ -1728,6 +1761,7 @@ body.about-open {
     overflow: hidden;
     color: #3b2340;
     backdrop-filter: blur(12px);
+    transform: translate(-50%, -50%) !important;
 }
 
 /* Welcome helper window position */
