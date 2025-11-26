@@ -400,7 +400,7 @@ if (personaButtons.length && personaTextEl) {
     const personaCopy = {
         dev: `As a developer, I love solving interaction problems, especially in VR. Things like “how should this feel in someone’s hands?” or “what feedback tells the player they did the right thing?” are the kind of questions I enjoy turning into code.`,
         creator: `As a creator, I’m obsessed with mood, pacing, and the little details people don’t always notice at first, sounds, particles, camera framing, tiny story hints that make a space feel lived-in and emotionally grounded.`,
-        gamer: `As a gamer-at-heart, I think a lot about how it feels to be on the other side of the screen. I love designing experiences that pull people in the same way my favourite games, films, and stories pull me in.`,
+        gamer: `As a gamer, I think a lot about how it feels to be on the other side of the screen. I love designing experiences that pull people in the same way my favourite games, films, and stories pull me in.`,
     };
 
     personaButtons.forEach((btn) => {
@@ -3479,6 +3479,7 @@ const videoPlayer = document.getElementById("desktopVideoPlayer");
 const videoSource = videoPlayer?.querySelector("source");
 const videoCloseBtn = videoWindow?.querySelector(".desktop-window-close");
 const videoHeader = videoWindow?.querySelector(".desktop-window-header");
+
 const textWindow = document.getElementById("desktopTextWindow");
 const textCloseBtn = document.getElementById("desktopTextClose");
 
@@ -3488,41 +3489,85 @@ const textHeader = textWindow?.querySelector(".desktop-window-header");
 
 let currentlyOpenIconImg = null;
 
-if (
-    desktopIcons.length &&
-    videoWindow &&
-    videoPlayer &&
-    videoSource &&
-    videoTitleEl &&
-    videoCloseBtn &&
-    screenDesktop &&
-    videoHeader
-) {
-    /* ---------- OPEN WINDOW WHEN CLICKING ICON ---------- */
-    const ELEVATOR_PITCH_PASSWORD = "cucumber"; // ← change to whatever you want
+// reset the active icon back to closed folder
+function resetActiveIcon() {
+    if (currentlyOpenIconImg) {
+        currentlyOpenIconImg.style.backgroundImage =
+            "url('/images/ClosedPurple.png')";
+        currentlyOpenIconImg = null;
+    }
+}
+
+// Setup desktop icons, windows, close buttons & dragging
+(function setupDesktopWindows() {
+    if (!screenDesktop) return;
+
+    // ---------- OPEN WINDOW WHEN CLICKING ICON ----------
+    const ELEVATOR_PITCH_PASSWORD = "cucumber";
 
     desktopIcons.forEach((icon) => {
+        const iconImg = icon.querySelector(".desktop-icon-img");
+        const isPasswordNote = icon.dataset.note === "password"; // password.txt
+        const isLockedVideo = icon.dataset.locked === "true";    // elevator pitch
+        const videoSrc = icon.dataset.video || null;
+
         const handleActivate = (e) => {
             if (e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
 
-            const videoSrc = icon.getAttribute("data-video");
+            // reset previously open icon (visually)
+            if (currentlyOpenIconImg && currentlyOpenIconImg !== iconImg) {
+                currentlyOpenIconImg.style.backgroundImage =
+                    "url('/images/ClosedPurple.png')";
+            }
+
+            // mark this icon as open
+            if (iconImg) {
+                currentlyOpenIconImg = iconImg;
+                currentlyOpenIconImg.style.backgroundImage =
+                    "url('/images/OpenPurple.png')";
+            }
+
+            // 👉 password.txt icon opens the TEXT WINDOW
+            if (isPasswordNote && textWindow) {
+                textWindow.style.display = "block";
+
+                // default position the first time
+                if (!textWindow.style.left) {
+                    textWindow.style.left = "160px";
+                    textWindow.style.top = "120px";
+                }
+                return; // don’t treat it as a video
+            }
+
+            // 👉 all other icons should have a data-video for the VIDEO WINDOW
+            if (!videoSrc || !videoWindow || !videoPlayer || !videoSource) {
+                console.warn("No data-video set for this desktop icon");
+                resetActiveIcon();
+                return;
+            }
+
             const title =
                 icon.getAttribute("data-title") ||
                 icon.querySelector("p")?.textContent ||
                 "Project video";
 
-            if (!videoSrc) {
-                console.warn("No data-video set for this desktop icon");
-                return;
+            // 🔐 ask for password on locked video
+            if (isLockedVideo) {
+                const input = prompt("Enter password to open this video:");
+                if (!input || input.trim().toLowerCase() !== ELEVATOR_PITCH_PASSWORD) {
+                    alert("Incorrect password, sorry!");
+                    resetActiveIcon();
+                    return;
+                }
             }
 
-            // ⬇️ KEEP all your existing logic from here down ⬇️
-            // (title, videoSource.src, videoWindow.style.display, play(), etc.)
+            // 🎥 open video window
+            const titleEl = videoWindow.querySelector(".desktop-window-title");
+            if (titleEl) titleEl.textContent = title;
 
-            videoTitleEl.textContent = title;
             videoSource.src = videoSrc;
             videoPlayer.load();
 
@@ -3533,15 +3578,14 @@ if (
             }
 
             videoPlayer.play().catch(() => {
-                // browser may block autoplay, user can press play
+                // autoplay might be blocked; user can press play
             });
-            // ⬆️ KEEP your custom bits here if you’ve added more ⬆️
         };
 
-        // 🖱 PC / desktop
+        // mouse
         icon.addEventListener("click", handleActivate);
 
-        // 📱 Phone / touch – added
+        // touch
         icon.addEventListener(
             "touchend",
             (e) => {
@@ -3551,46 +3595,45 @@ if (
         );
     });
 
-
-
-    /* ---------- CLOSE WINDOW (X + monitor close) ---------- */
-    function resetActiveIcon() {
-        if (currentlyOpenIconImg) {
-            currentlyOpenIconImg.style.backgroundImage =
-                "url('/images/ClosedPurple.png')";
-            currentlyOpenIconImg = null;
-        }
-    }
+    // ---------- CLOSE WINDOW (X + monitor close) ----------
 
     function closeVideoWindow() {
+        if (!videoWindow || !videoPlayer) return;
         videoPlayer.pause();
         videoPlayer.currentTime = 0;
         videoWindow.style.display = "none";
         resetActiveIcon();
     }
 
-    videoCloseBtn.addEventListener("click", closeVideoWindow);
-
-    const screenModalClose = document.getElementById("screenModalClose");
-    if (screenModalClose) {
-        screenModalClose.addEventListener("click", () => {
+    if (videoCloseBtn) {
+        videoCloseBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
             closeVideoWindow();
-            if (textWindow) textWindow.style.display = "none";
         });
     }
 
     // close password.txt window
     if (textWindow && textCloseBtn) {
-        textCloseBtn.addEventListener("click", () => {
+        textCloseBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
             textWindow.style.display = "none";
             resetActiveIcon();
         });
     }
 
+    // make the big monitor X also close any open desktop windows
+    const screenModalClose2 = document.getElementById("screenModalClose");
+    if (screenModalClose2 && screenModal) {
+        screenModalClose2.addEventListener("click", (e) => {
+            e.stopPropagation();
+            screenModal.classList.remove("visible");
+            closeVideoWindow();
+            if (textWindow) textWindow.style.display = "none";
+        });
+    }
 
-    /* ---------- DRAGGING LOGIC (for all desktop windows) ---------- */
+    // ---------- DRAGGING LOGIC (for all desktop windows) ----------
 
-    // ---- Dragging logic for ALL desktop windows (mouse + touch) ----
     let isDragging = false;
     let dragOffsetX = 0;
     let dragOffsetY = 0;
@@ -3600,8 +3643,11 @@ if (
         if (!windowEl || !headerEl) return;
 
         headerEl.addEventListener("pointerdown", (e) => {
-            // only left-click / primary touch
+            // ignore right/middle click
             if (e.button !== 0 && e.button !== undefined) return;
+
+            // don’t start dragging if we clicked the close button
+            if (e.target.closest(".desktop-window-close")) return;
 
             isDragging = true;
             activeDragWindow = windowEl;
@@ -3641,38 +3687,29 @@ if (
             activeDragWindow.style.top = `${relativeTop}px`;
         });
 
-        headerEl.addEventListener("pointerup", (e) => {
+        const endDrag = (e) => {
             if (!isDragging || activeDragWindow !== windowEl) return;
             isDragging = false;
             activeDragWindow = null;
             document.body.style.userSelect = "";
-            headerEl.releasePointerCapture(e.pointerId);
-        });
+            if (e && e.pointerId) {
+                try {
+                    headerEl.releasePointerCapture(e.pointerId);
+                } catch { }
+            }
+        };
 
-        headerEl.addEventListener("pointercancel", () => {
-            isDragging = false;
-            activeDragWindow = null;
-            document.body.style.userSelect = "";
-        });
+        headerEl.addEventListener("pointerup", endDrag);
+        headerEl.addEventListener("pointercancel", endDrag);
     }
 
     // attach to all windows you want draggable:
     attachDrag(videoWindow, videoHeader);
-
-    // if you have these already:
-    //   const welcomeWindow = document.getElementById("desktopWelcomePrompt");
-    //   const welcomeHeader = welcomeWindow?.querySelector(".desktop-window-header");
-    //   const textWindow = document.getElementById("desktopTextWindow");
-    //   const textHeader = textWindow?.querySelector(".desktop-window-header");
-
     attachDrag(welcomeWindow, welcomeHeader);
     attachDrag(textWindow, textHeader);
-    }
+})();
 
 
-
-
-
-
-
+// ⬇️ IMPORTANT: nothing else here, then your existing render call:
 render();
+
