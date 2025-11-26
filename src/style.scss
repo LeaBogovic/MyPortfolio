@@ -2104,6 +2104,28 @@ body.about-open {
     animation: contactStarsFloat 2.4s ease-in-out infinite;
 }
 
+.screen-desktop {
+    position: relative; // important for drag math
+    overflow: hidden;
+}
+
+.desktop-window {
+    position: absolute; // REQUIRED so left/top do something
+    // optional defaults:
+    // top: 80px;
+    // left: 120px;
+}
+
+.desktop-window-header {
+    cursor: grab;
+    user-select: none;
+}
+
+.desktop-window-header:active {
+    cursor: grabbing;
+}
+
+
 .screen-button {
     position: fixed;
     bottom: 16vh;

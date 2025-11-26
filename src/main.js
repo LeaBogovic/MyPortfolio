@@ -3500,7 +3500,7 @@ function resetActiveIcon() {
 
 // Setup desktop icons, windows, close buttons & dragging
 (function setupDesktopWindows() {
-    if (!screenDesktop) return;
+    if (!screenDesktop) return; // screenDesktop is defined above in your login section
 
     // ---------- OPEN WINDOW WHEN CLICKING ICON ----------
     const ELEVATOR_PITCH_PASSWORD = "cucumber";
@@ -3565,8 +3565,7 @@ function resetActiveIcon() {
             }
 
             // 🎥 open video window
-            const titleEl = videoWindow.querySelector(".desktop-window-title");
-            if (titleEl) titleEl.textContent = title;
+            if (videoTitleEl) videoTitleEl.textContent = title;
 
             videoSource.src = videoSrc;
             videoPlayer.load();
@@ -3632,7 +3631,7 @@ function resetActiveIcon() {
         });
     }
 
-    // ---------- DRAGGING LOGIC (for all desktop windows) ----------
+    /* ---------- DRAGGING LOGIC (for all desktop windows) ---------- */
 
     let isDragging = false;
     let dragOffsetX = 0;
@@ -3643,18 +3642,16 @@ function resetActiveIcon() {
         if (!windowEl || !headerEl) return;
 
         headerEl.addEventListener("pointerdown", (e) => {
-            // ignore right/middle click
+            // only left click / primary touch
             if (e.button !== 0 && e.button !== undefined) return;
 
-            // don’t start dragging if we clicked the close button
+            // don’t drag when clicking the X button
             if (e.target.closest(".desktop-window-close")) return;
 
             isDragging = true;
             activeDragWindow = windowEl;
 
             const rect = windowEl.getBoundingClientRect();
-            const desktopRect = screenDesktop.getBoundingClientRect();
-
             dragOffsetX = e.clientX - rect.left;
             dragOffsetY = e.clientY - rect.top;
 
@@ -3670,21 +3667,19 @@ function resetActiveIcon() {
             let newLeft = e.clientX - dragOffsetX;
             let newTop = e.clientY - dragOffsetY;
 
-            const maxLeft = desktopRect.right - activeDragWindow.offsetWidth;
-            const maxTop = desktopRect.bottom - activeDragWindow.offsetHeight;
             const minLeft = desktopRect.left;
             const minTop = desktopRect.top;
+            const maxLeft = desktopRect.right - windowEl.offsetWidth;
+            const maxTop = desktopRect.bottom - windowEl.offsetHeight;
 
             if (newLeft < minLeft) newLeft = minLeft;
-            if (newTop < minTop) newTop = minTop;
             if (newLeft > maxLeft) newLeft = maxLeft;
+            if (newTop < minTop) newTop = minTop;
             if (newTop > maxTop) newTop = maxTop;
 
-            const relativeLeft = newLeft - desktopRect.left;
-            const relativeTop = newTop - desktopRect.top;
-
-            activeDragWindow.style.left = `${relativeLeft}px`;
-            activeDragWindow.style.top = `${relativeTop}px`;
+            // convert to coordinates inside .screen-desktop
+            windowEl.style.left = `${newLeft - desktopRect.left}px`;
+            windowEl.style.top = `${newTop - desktopRect.top}px`;
         });
 
         const endDrag = (e) => {
@@ -3692,10 +3687,12 @@ function resetActiveIcon() {
             isDragging = false;
             activeDragWindow = null;
             document.body.style.userSelect = "";
-            if (e && e.pointerId) {
+            if (e && e.pointerId !== undefined) {
                 try {
                     headerEl.releasePointerCapture(e.pointerId);
-                } catch { }
+                } catch (err) {
+                    // ignore
+                }
             }
         };
 
@@ -3703,13 +3700,12 @@ function resetActiveIcon() {
         headerEl.addEventListener("pointercancel", endDrag);
     }
 
-    // attach to all windows you want draggable:
+    // make all windows draggable via their headers
     attachDrag(videoWindow, videoHeader);
     attachDrag(welcomeWindow, welcomeHeader);
     attachDrag(textWindow, textHeader);
-})();
+})(); // <- close setupDesktopWindows IIFE
 
-
-// ⬇️ IMPORTANT: nothing else here, then your existing render call:
+// call your render loop (render function is defined above in your file)
 render();
 
